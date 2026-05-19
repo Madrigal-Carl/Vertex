@@ -13,8 +13,8 @@ export default function AuthPage() {
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState("");
   const { login } = useAuth();
-  const { location } = useLocation();
-  const { navigate } = useNavigate();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   function handleLogin(e) {
     e.preventDefault();
