@@ -1,10 +1,10 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuthContext } from "@/context/AuthContext";
+import useAuth from "@/hooks/useAuth";
 import { ROLES } from "@/constants/roles";
 import { getRoleRedirect } from "@/utils/getRoleRedirect";
 
 export default function PublicOnlyRoute() {
-  const { isAuthenticated, role } = useAuthContext();
+  const { isAuthenticated, role } = useAuth();
 
   // Guests can access
   if (!isAuthenticated) {

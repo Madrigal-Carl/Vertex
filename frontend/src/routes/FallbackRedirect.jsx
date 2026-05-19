@@ -1,10 +1,10 @@
 import { Navigate } from "react-router-dom";
-import { useAuthContext } from "@/context/AuthContext";
+import useAuth from "@/hooks/useAuth";
 import { ROLES } from "@/constants/roles";
 import { getRoleRedirect } from "@/utils/getRoleRedirect";
 
 export default function FallbackRedirect() {
-  const { isAuthenticated, role } = useAuthContext();
+  const { isAuthenticated, role } = useAuth();
 
   // Guest users
   if (!isAuthenticated) {

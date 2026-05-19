@@ -1,3 +1,130 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* =========================
+   ROOT THEME
+========================= */
+
+:root {
+  /* Fonts */
+  --font-sans: "Inter", sans-serif;
+  --font-display: "Oswald", sans-serif;
+
+  /* Background */
+  --bg: #f0f5fa;
+  --text: #0f2436;
+
+  /* Card */
+  --card: #ffffff;
+  --border: #d9e2ec;
+
+  /* Primary (Vertex Dark Blue) */
+  --primary: #0f2436;
+  --secondary: #5e7386;
+
+  /* Accent (Red) */
+  --accent: #e63946;
+
+  /* Utility */
+  --muted: #94a3b8;
+}
+
+/* =========================
+   DARK MODE
+========================= */
+
+.dark {
+  --bg: #0b1620;
+  --text: #f0f5fa;
+  --card: #0f2436;
+  --border: #1e2d3d;
+  --primary: #f0f5fa;
+  --secondary: #94a3b8;
+  --accent: #e63946;
+}
+
+/* =========================
+   BASE STYLES
+========================= */
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+}
+
+/* =========================
+   UTILITIES
+========================= */
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Card helper */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 4px;
+  transition: 0.2s ease;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+/* Accent button */
+.btn-accent {
+  background: var(--accent);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 4px;
+}
+
+/* Glass nav */
+.glass-nav {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Hover card */
+.card-hover {
+  transition: 0.2s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+}
+
+/* Hide scrollbar */
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  scrollbar-width: none;
+}
+
+html {
+  scroll-behavior: smooth;
+}

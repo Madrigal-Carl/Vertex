@@ -1,5 +1,6 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
+import PublicLayout from "@/layouts/PublicLayout";
 import HomePage from "@/pages/public/HomePage";
 import AuthPage from "@/pages/public/AuthPage";
 
@@ -22,7 +23,7 @@ import ScrollToTop from "@/components/public/ScrollToTop";
 
 export default function AppRouter() {
   return (
-    <BrowserRouter>
+    <>
       <ScrollToTop />
       <Routes>
         {/* PUBLIC */}
@@ -80,6 +81,6 @@ export default function AppRouter() {
         {/* FALLBACK */}
         <Route path="*" element={<FallbackRedirect />} />
       </Routes>
-    </BrowserRouter>
+    </>
   );
 }
