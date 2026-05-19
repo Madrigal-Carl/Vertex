@@ -5,6 +5,8 @@ import {
   useCartCount,
 } from "@/stores/useCartStore";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import useAuth from "@/hooks/useAuth";
 
 function formatPrice(p) {
   const value = Number(p ?? 0);
@@ -16,6 +18,23 @@ export default function CartDrawer() {
     useCartStore();
   const total = useCartTotal();
   const count = useCartCount();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const handleCheckout = () => {
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+
+    if (user.role !== "customer") {
+      alert("Only customers can proceed to checkout.");
+      return;
+    }
+
+    navigate("/checkout");
+    closeDrawer();
+  };
 
   return (
     <>
@@ -146,7 +165,7 @@ export default function CartDrawer() {
                 <span>{formatPrice(total)}</span>
               </div>
             </div>
-            <Link to="/checkout" onClick={closeDrawer}>
+            <Link to="/checkout" onClick={handleCheckout}>
               <button
                 data-testid="btn-checkout"
                 className="w-full py-3 bg-[#E63946] text-white font-display tracking-widest text-sm uppercase hover:bg-[#cc2f3b] transition-colors active:scale-95"
