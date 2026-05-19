@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
-import google from "@/assets/google.svg";
+import { FcGoogle } from "react-icons/fc";
 import { Eye, EyeOff } from "lucide-react";
 
 export default function AuthPage() {
@@ -244,7 +244,7 @@ export default function AuthPage() {
             className="w-full py-3 border border-[#0F2436]/20 flex items-center justify-center gap-3 text-[#0F2436] font-sans text-sm hover:bg-[#F0F5FA] transition-colors"
             style={{ borderRadius: "4px" }}
           >
-            <img src={google} alt="Google" className="text-[#4285F4] w-6 h-6" />
+            <FcGoogle className="text-[#4285F4] w-6 h-6" />
             {tab === "login" ? "Sign in with Google" : "Sign up with Google"}
           </button>
         </div>
