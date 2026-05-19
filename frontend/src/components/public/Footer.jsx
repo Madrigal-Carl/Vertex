@@ -62,8 +62,6 @@ export default function Footer() {
               { label: "About Us", to: "/about" },
               { label: "Products", to: "/products" },
               { label: "Services", to: "/services" },
-              { label: "Cart", to: "/cart" },
-              { label: "Sign In", to: "/auth" },
             ].map((link) => (
               <Link key={link.to} to={link.to}>
                 <span className="text-white/60 hover:text-white text-sm font-sans cursor-pointer transition-colors block py-1">

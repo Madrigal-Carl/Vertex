@@ -122,7 +122,7 @@ export default function ProductCard({ product }) {
             </span>
           )}
         </div>
-        <Link href={`/product/${product.id}`}>
+        <Link to={`/product/${product.id}`}>
           <button
             data-testid={`btn-view-${product.id}`}
             className="w-full mt-2 py-2.5 border border-[#0F2436] text-[#0F2436] font-display tracking-widest text-xs uppercase transition-all hover:bg-[#0F2436] hover:text-white active:scale-95"

@@ -24,6 +24,7 @@ export default function CartDrawer() {
   const handleCheckout = () => {
     if (!user) {
       navigate("/auth");
+      closeDrawer();
       return;
     }
 

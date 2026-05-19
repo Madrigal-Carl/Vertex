@@ -5,6 +5,7 @@ import HomePage from "@/pages/public/HomePage";
 import AboutPage from "@/pages/public/AboutPage";
 import ProductPage from "@/pages/public/ProductPage";
 import ServicePage from "@/pages/public/ServicePage";
+import ProductDetailPage from "@/pages/public/ProductDetailPage";
 import AuthPage from "@/pages/public/AuthPage";
 
 import CheckoutPage from "@/pages/customer/CheckoutPage";
@@ -35,6 +36,7 @@ export default function AppRouter() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/products" element={<ProductPage />} />
           <Route path="/services" element={<ServicePage />} />
+          <Route path="/product/:id" element={<ProductDetailPage />} />
         </Route>
 
         {/* ROLE REDIRECT */}
