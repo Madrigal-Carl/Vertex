@@ -49,7 +49,7 @@
 ========================= */
 
 body {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   background: var(--bg);
   color: var(--text);
 }
@@ -68,52 +68,9 @@ h6 {
    UTILITIES
 ========================= */
 
-.font-display {
-  font-family: var(--font-display);
-}
-
 /* Card helper */
-.card {
+.bg-card {
   background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-}
-
-/* Buttons */
-.btn-primary {
-  background: var(--primary);
-  color: white;
-  padding: 10px 16px;
-  border-radius: 4px;
-  transition: 0.2s ease;
-}
-
-.btn-primary:hover {
-  opacity: 0.9;
-}
-
-/* Accent button */
-.btn-accent {
-  background: var(--accent);
-  color: white;
-  padding: 10px 16px;
-  border-radius: 4px;
-}
-
-/* Glass nav */
-.glass-nav {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border);
-}
-
-/* Hover card */
-.card-hover {
-  transition: 0.2s ease;
-}
-
-.card-hover:hover {
-  transform: translateY(-4px);
 }
 
 html {

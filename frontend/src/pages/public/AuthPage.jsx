@@ -19,31 +19,62 @@ export default function AuthPage() {
   function handleLogin(e) {
     e.preventDefault();
     setError("");
+
     if (!email || !password) {
       setError("Please fill in all fields.");
       return;
     }
-    login({ name: email.split("@")[0], email });
+
+    // sample role logic
+    let role = "customer";
+
+    if (email === "admin@vertex.com") {
+      role = "admin";
+    } else if (email === "cashier@vertex.com") {
+      role = "cashier";
+    } else if (email === "tech@vertex.com") {
+      role = "technician";
+    }
+
+    login({
+      fullname: email.split("@")[0],
+      email,
+      role,
+    });
+
     navigate("/");
   }
 
   function handleRegister(e) {
     e.preventDefault();
     setError("");
+
     if (!name || !email || !password || !confirm) {
       setError("Please fill in all fields.");
       return;
     }
+
     if (password !== confirm) {
       setError("Passwords do not match.");
       return;
     }
-    login({ name, email });
+
+    login({
+      fullname: name,
+      email,
+      role: "customer",
+    });
+
     navigate("/");
   }
 
   function handleGoogle() {
-    login({ name: "Google User", email: "googleuser@gmail.com" });
+    login({
+      fullname: "Google User",
+      email: "googleuser@gmail.com",
+      role: "customer",
+    });
+
     navigate("/");
   }
 

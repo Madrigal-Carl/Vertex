@@ -29,7 +29,6 @@ export default function CartDrawer() {
     }
 
     if (user.role !== "customer") {
-      alert("Only customers can proceed to checkout.");
       return;
     }
 
@@ -66,7 +65,7 @@ export default function CartDrawer() {
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-white">
+        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
           {items.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center py-16">
               <div
