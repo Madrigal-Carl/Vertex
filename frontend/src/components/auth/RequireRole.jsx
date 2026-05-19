@@ -1,9 +1,21 @@
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import useAuth from "@/hooks/useAuth";
 
-export default function RequireRole({ user, role, children }) {
-  if (!user) return <Navigate to="/login" replace />;
+export default function useProtectedAction() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
-  if (user.role !== role) return <Navigate to="/" replace />;
+  return ({ allowedRole, action }) => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
 
-  return children;
+    if (allowedRole && user.role !== allowedRole) {
+      navigate("/unauthorized");
+      return;
+    }
+
+    action?.();
+  };
 }

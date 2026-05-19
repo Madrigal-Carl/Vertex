@@ -95,7 +95,8 @@ export default function Services() {
   const handleBookNow = (serviceTitle) => {
     protectedAction({
       allowedRole: "customer",
-      action: () => {
+      unauthorizedMessage: "Only customers can book a service.",
+      onSuccess: () => {
         setBookingService(serviceTitle);
       },
     });

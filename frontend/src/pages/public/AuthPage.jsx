@@ -41,7 +41,6 @@ export default function AuthPage() {
       email,
       role,
     });
-
     navigate("/");
   }
 

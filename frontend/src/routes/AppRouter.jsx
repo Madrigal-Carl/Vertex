@@ -9,6 +9,7 @@ import ProductDetailPage from "@/pages/public/ProductDetailPage";
 import AuthPage from "@/pages/public/AuthPage";
 
 import CheckoutPage from "@/pages/customer/CheckoutPage";
+import HistoryPage from "@/pages/customer/HistoryPage";
 
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import TechnicianDashboard from "@/pages/technician/TechnicianDashboard";
@@ -53,6 +54,9 @@ export default function AppRouter() {
         <Route element={<ProtectedRoute allowedRoles={[ROLES.CUSTOMER]} />}>
           <Route element={<PublicLayout />}>
             <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/profile/history" element={<HistoryPage />} />
+            <Route path="/profile/address" element={<CheckoutPage />} />
+            <Route path="/profile/settings" element={<CheckoutPage />} />
           </Route>
         </Route>
 

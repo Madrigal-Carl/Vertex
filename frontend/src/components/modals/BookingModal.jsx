@@ -2,15 +2,16 @@ import { useState } from "react";
 import { X, CalendarCheck } from "lucide-react";
 
 export default function BookingModal({ service, onClose }) {
-  const [form, setForm] =
-    useState <
-    BookingState >
-    { service, name: "", contact: "", date: "", notes: "" };
+  const [form, setForm] = useState({
+    contact: "",
+    date: "",
+    notes: "",
+  });
   const [submitted, setSubmitted] = useState(false);
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (!form.name.trim() || !form.contact.trim() || !form.date) return;
+    if (!form.contact.trim() || !form.date) return;
     setSubmitted(true);
   }
 
@@ -68,21 +69,6 @@ export default function BookingModal({ service, onClose }) {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="px-6 py-6 space-y-4">
-            <div>
-              <label className="block text-xs font-display tracking-widest text-[#5E7386] uppercase mb-2">
-                Full Name
-              </label>
-              <input
-                required
-                value={form.name}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, name: e.target.value }))
-                }
-                placeholder="Juan Dela Cruz"
-                className="w-full border border-[#0F2436]/20 px-3 py-2.5 text-sm font-sans text-[#0F2436] focus:outline-none focus:border-[#0F2436]"
-                style={{ borderRadius: "4px" }}
-              />
-            </div>
             <div>
               <label className="block text-xs font-display tracking-widest text-[#5E7386] uppercase mb-2">
                 Phone / Email

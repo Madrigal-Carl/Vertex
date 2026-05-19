@@ -125,7 +125,7 @@ export default function Navbar() {
                     <div className="py-1">
                       {[
                         {
-                          to: "/profile/orders",
+                          to: "/profile/history",
                           label: "History",
                           icon: Clock,
                         },
