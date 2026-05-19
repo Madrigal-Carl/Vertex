@@ -10,6 +10,8 @@ import AuthPage from "@/pages/public/AuthPage";
 
 import CheckoutPage from "@/pages/customer/CheckoutPage";
 import HistoryPage from "@/pages/customer/HistoryPage";
+import AddressPage from "@/pages/customer/AddressPage";
+import SettingPage from "@/pages/customer/SettingPage";
 
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import TechnicianDashboard from "@/pages/technician/TechnicianDashboard";
@@ -55,8 +57,8 @@ export default function AppRouter() {
           <Route element={<PublicLayout />}>
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/profile/history" element={<HistoryPage />} />
-            <Route path="/profile/address" element={<CheckoutPage />} />
-            <Route path="/profile/settings" element={<CheckoutPage />} />
+            <Route path="/profile/address" element={<AddressPage />} />
+            <Route path="/profile/settings" element={<SettingPage />} />
           </Route>
         </Route>
 

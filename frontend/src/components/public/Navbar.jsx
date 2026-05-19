@@ -102,7 +102,7 @@ export default function Navbar() {
                 onClick={() => setProfileOpen((o) => !o)}
                 className="w-9 h-9 rounded-full bg-[#E63946] flex items-center justify-center text-white font-display font-bold text-sm hover:bg-[#cc2f3b] transition-colors"
               >
-                {user?.name?.charAt(0).toUpperCase() || "U"}
+                {user?.fullname?.charAt(0).toUpperCase() || "U"}
               </button>
               {profileOpen && (
                 <>
@@ -116,7 +116,7 @@ export default function Navbar() {
                   >
                     <div className="px-4 py-3 border-b border-border">
                       <p className="font-display text-[#0F2436] text-sm">
-                        {user?.name}
+                        {user?.fullname}
                       </p>
                       <p className="text-xs text-[#5E7386] truncate">
                         {user?.email}
