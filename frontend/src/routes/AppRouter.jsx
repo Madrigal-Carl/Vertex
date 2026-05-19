@@ -2,6 +2,9 @@ import { Routes, Route } from "react-router-dom";
 
 import PublicLayout from "@/layouts/PublicLayout";
 import HomePage from "@/pages/public/HomePage";
+import AboutPage from "@/pages/public/AboutPage";
+import ProductPage from "@/pages/public/ProductPage";
+import ServicePage from "@/pages/public/ServicePage";
 import AuthPage from "@/pages/public/AuthPage";
 
 import CheckoutPage from "@/pages/customer/CheckoutPage";
@@ -29,6 +32,9 @@ export default function AppRouter() {
         {/* PUBLIC */}
         <Route element={<PublicLayout />}>
           <Route path="/" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/products" element={<ProductPage />} />
+          <Route path="/services" element={<ServicePage />} />
         </Route>
 
         {/* ROLE REDIRECT */}

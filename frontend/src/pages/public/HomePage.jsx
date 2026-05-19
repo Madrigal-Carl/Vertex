@@ -7,6 +7,7 @@ import { PRODUCTS } from "@/constants/products";
 import ReviewModal from "@/components/modals/ReviewModal";
 import { useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
+import useProtectedAction from "@/hooks/useProtectedAction";
 import {
   X,
   Star,
@@ -94,20 +95,15 @@ export default function Home() {
   const [showReviewModal, setShowReviewModal] = useState(false);
 
   const navigate = useNavigate();
+  const protectedAction = useProtectedAction();
   const { user } = useAuth();
 
   const handleLeaveReview = () => {
-    if (!user) {
-      navigate("/login");
-      return;
-    }
-
-    if (user.role !== "customer") {
-      alert("Only customers can leave reviews.");
-      return;
-    }
-
-    setShowReviewModal(true);
+    protectedAction({
+      role: "customer",
+      unauthorizedMessage: "Only customers can leave reviews.",
+      onSuccess: () => setShowReviewModal(true),
+    });
   };
 
   return (
