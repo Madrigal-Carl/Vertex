@@ -1,7 +1,14 @@
 import { MapPin, Mail, Phone } from "lucide-react";
+import { FaFacebook, FaTiktok, FaInstagram, FaXTwitter } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 export default function Footer() {
+  const socialLinks = [
+    { label: "Facebook", icon: FaFacebook, link: "#" },
+    { label: "Tiktok", icon: FaTiktok, link: "#" },
+    { label: "Instagram", icon: FaInstagram, link: "#" },
+    { label: "X", icon: FaXTwitter, link: "#" },
+  ];
   return (
     <footer className="bg-[#0F2436] text-white">
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -40,15 +47,19 @@ export default function Footer() {
             </div>
           </div>
           <div className="flex gap-3 mt-6">
-            {[Mail, Mail, Mail, Mail].map((Icon, i) => (
-              <button
-                key={i}
-                className="w-9 h-9 border border-white/20 flex items-center justify-center text-white/50 hover:text-white hover:border-white/50 transition-colors"
-                style={{ borderRadius: "4px" }}
-              >
-                <Icon size={15} />
-              </button>
-            ))}
+            {socialLinks.map((social, i) => {
+              const Icon = social.icon;
+
+              return (
+                <button
+                  key={i}
+                  className="group w-9 h-9 border border-white/20 flex items-center justify-center text-white/50 hover:text-white hover:border-white/50 transition-colors"
+                  style={{ borderRadius: "4px" }}
+                >
+                  <Icon className="w-4 h-4 fill-current text-current" />
+                </button>
+              );
+            })}
           </div>
         </div>
 
