@@ -8,7 +8,6 @@ export default function AuthPage() {
   const [tab, setTab] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
   const [confirm, setConfirm] = useState("");
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState("");
@@ -37,7 +36,7 @@ export default function AuthPage() {
     }
 
     login({
-      fullname: email.split("@")[0],
+      fullname: "Carl Madrigal",
       email,
       role,
     });
@@ -48,7 +47,7 @@ export default function AuthPage() {
     e.preventDefault();
     setError("");
 
-    if (!name || !email || !password || !confirm) {
+    if (!email || !password || !confirm) {
       setError("Please fill in all fields.");
       return;
     }
@@ -59,7 +58,7 @@ export default function AuthPage() {
     }
 
     login({
-      fullname: name,
+      fullname: "Carl Madrigal",
       email,
       role: "customer",
     });
@@ -193,20 +192,6 @@ export default function AuthPage() {
             </form>
           ) : (
             <form onSubmit={handleRegister} className="space-y-4">
-              <div>
-                <label className="block text-xs font-display tracking-widest text-[#5E7386] uppercase mb-2">
-                  Full Name
-                </label>
-                <input
-                  data-testid="input-name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Juan Dela Cruz"
-                  className="w-full border border-[#0F2436]/20 px-3 py-2.5 text-sm font-sans text-[#0F2436] placeholder-[#5E7386]/50 focus:outline-none focus:border-[#0F2436] transition-colors"
-                  style={{ borderRadius: "4px" }}
-                />
-              </div>
               <div>
                 <label className="block text-xs font-display tracking-widest text-[#5E7386] uppercase mb-2">
                   Email

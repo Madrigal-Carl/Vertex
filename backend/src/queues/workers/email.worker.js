@@ -13,14 +13,6 @@ const emailWorker = new Worker(
     const { type, data } = job.data;
 
     const handlers = {
-      [EMAIL_JOBS.WELCOME]: async () => {
-        return sendEmail({
-          to: data.to,
-          subject: "Welcome to Vertex",
-          html: welcomeEmailTemplate({ name: data.name }),
-        });
-      },
-
       [EMAIL_JOBS.VERIFY_EMAIL]: async () => {
         return sendEmail({
           to: data.to,

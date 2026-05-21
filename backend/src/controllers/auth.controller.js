@@ -1,31 +1,27 @@
-import User from "../models/User.js";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import { registerUser, verifyUserEmail } from "../services/auth.service.js";
+import { sendTokenCookies } from "../utils/sendTokenCookies.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
-export const register = async (req, res) => {
-  try {
-    const { fullname, email, password } = req.body;
+export const register = asyncHandler(async (req, res) => {
+  await registerUser(req.body);
 
-    const existingUser = await User.findOne({ email });
+  return res.status(201).json({
+    message: "Account created. Please verify your email.",
+  });
+});
 
-    if (existingUser) {
-      return res.status(400).json({
-        message: "Email already exists",
-      });
-    }
+export const verifyEmail = asyncHandler(async (req, res) => {
+  const { token } = req.params;
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+  const { accessToken, refreshToken } = await verifyUserEmail(token);
 
-    const user = await User.create({
-      fullname,
-      email,
-      password: hashedPassword,
-    });
+  sendTokenCookies({
+    res,
+    accessToken,
+    refreshToken,
+  });
 
-    res.status(201).json(user);
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
-  }
-};
+  return res.json({
+    message: "Email verified successfully",
+  });
+});
