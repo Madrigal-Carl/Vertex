@@ -1,4 +1,8 @@
-import { registerUser, verifyUserEmail } from "../services/auth.service.js";
+import {
+  registerUser,
+  verifyUserEmail,
+  loginUser,
+} from "../services/auth.service.js";
 import { sendTokenCookies } from "../utils/sendTokenCookies.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
@@ -23,5 +27,25 @@ export const verifyEmail = asyncHandler(async (req, res) => {
 
   return res.json({
     message: "Email verified successfully",
+  });
+});
+
+export const login = asyncHandler(async (req, res) => {
+  const { accessToken, refreshToken, user } = await loginUser(req.body);
+
+  sendTokenCookies({
+    res,
+    accessToken,
+    refreshToken,
+  });
+
+  return res.json({
+    message: "Login successful",
+    user: {
+      id: user._id,
+      fullname: user.fullname,
+      email: user.email,
+      role: user.role,
+    },
   });
 });

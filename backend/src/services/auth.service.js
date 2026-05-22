@@ -62,3 +62,31 @@ export const verifyUserEmail = async (token) => {
 
   return { user, accessToken, refreshToken };
 };
+
+export const loginUser = async ({ email, password }) => {
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new Error("Invalid credentials");
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+
+  if (!isPasswordValid) {
+    throw new Error("Invalid credentials");
+  }
+
+  if (!user.isVerified) {
+    throw new Error("Please verify your email first");
+  }
+
+  const accessToken = generateAccessToken(user._id);
+
+  const refreshToken = generateRefreshToken(user._id);
+
+  return {
+    user,
+    accessToken,
+    refreshToken,
+  };
+};

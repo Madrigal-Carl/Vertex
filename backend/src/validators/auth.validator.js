@@ -1,4 +1,4 @@
-import { registerSchema } from "../schemas/auth.schema.js";
+import { registerSchema, loginSchema } from "../schemas/auth.schema.js";
 
 export const validateRegister = (req, res, next) => {
   const result = registerSchema.safeParse(req.body);
@@ -11,5 +11,20 @@ export const validateRegister = (req, res, next) => {
   }
 
   req.body = result.data;
+  next();
+};
+
+export const validateLogin = (req, res, next) => {
+  const result = loginSchema.safeParse(req.body);
+
+  if (!result.success) {
+    return res.status(400).json({
+      message: "Validation error",
+      errors: result.error.format(),
+    });
+  }
+
+  req.body = result.data;
+
   next();
 };
