@@ -90,3 +90,7 @@ export const loginUser = async ({ email, password }) => {
     refreshToken,
   };
 };
+
+export const logoutUser = async () => {
+  return true;
+};

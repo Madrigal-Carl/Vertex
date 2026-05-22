@@ -2,8 +2,10 @@ import {
   registerUser,
   verifyUserEmail,
   loginUser,
+  logoutUser,
 } from "../services/auth.service.js";
 import { sendTokenCookies } from "../utils/sendTokenCookies.js";
+import { clearTokenCookies } from "../utils/clearTokenCookies.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const register = asyncHandler(async (req, res) => {
@@ -47,5 +49,15 @@ export const login = asyncHandler(async (req, res) => {
       email: user.email,
       role: user.role,
     },
+  });
+});
+
+export const logout = asyncHandler(async (req, res) => {
+  await logoutUser();
+
+  clearTokenCookies(res);
+
+  return res.json({
+    message: "Logged out successfully",
   });
 });
