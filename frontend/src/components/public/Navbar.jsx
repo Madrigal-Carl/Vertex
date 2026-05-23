@@ -51,7 +51,7 @@ export default function Navbar() {
     0,
   );
   const openDrawer = useCartStore((state) => state.openDrawer);
-  const { user, isAuthenticated: isLoggedIn, logout } = useAuth();
+  const { user, loading, isAuthenticated: isLoggedIn, logout } = useAuth();
   const location = useLocation();
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -95,7 +95,7 @@ export default function Navbar() {
             )}
           </button>
 
-          {isLoggedIn ? (
+          {loading ? null : isLoggedIn ? (
             <div className="relative">
               <button
                 data-testid="btn-profile"
@@ -155,8 +155,8 @@ export default function Navbar() {
                       ))}
                       <button
                         data-testid="btn-logout"
-                        onClick={() => {
-                          logout();
+                        onClick={async () => {
+                          await logout();
                           setProfileOpen(false);
                         }}
                         className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-[#F0F5FA] cursor-pointer transition-colors border-t border-border"

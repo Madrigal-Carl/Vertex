@@ -6,7 +6,7 @@ export const validateRegister = (req, res, next) => {
   if (!result.success) {
     return res.status(400).json({
       message: "Validation error",
-      errors: result.error.format(),
+      errors: result.error.issues,
     });
   }
 
@@ -20,7 +20,7 @@ export const validateLogin = (req, res, next) => {
   if (!result.success) {
     return res.status(400).json({
       message: "Validation error",
-      errors: result.error.format(),
+      errors: result.error.issues,
     });
   }
 

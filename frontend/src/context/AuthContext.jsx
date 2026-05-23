@@ -1,15 +1,52 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
+
+import {
+  loginUser,
+  registerUser,
+  logoutUser,
+  getMe,
+} from "@/services/auth.service";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  const login = (userData) => {
-    setUser(userData);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchCurrentUser();
+  }, []);
+
+  async function fetchCurrentUser() {
+    try {
+      const response = await getMe();
+
+      setUser(response.user);
+    } catch (error) {
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const login = async (credentials) => {
+    const response = await loginUser(credentials);
+
+    setUser(response.user);
+
+    return response;
   };
 
-  const logout = () => {
+  const register = async (userData) => {
+    const response = await registerUser(userData);
+
+    return response;
+  };
+
+  const logout = async () => {
+    await logoutUser();
+
     setUser(null);
   };
 
@@ -17,9 +54,11 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
+        loading,
         isAuthenticated: !!user,
         role: user?.role || null,
         login,
+        register,
         logout,
       }}
     >

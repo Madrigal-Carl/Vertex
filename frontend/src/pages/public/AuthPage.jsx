@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
 import { FcGoogle } from "react-icons/fc";
 import PasswordInput from "@/components/ui/password-input";
+import { getErrorMessage } from "@/utils/getErrorMessage";
 
 export default function AuthPage() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, register } = useAuth();
 
   const [tab, setTab] = useState("login");
   const [error, setError] = useState("");
@@ -37,59 +38,44 @@ export default function AuthPage() {
     }));
   }
 
-  function handleLogin(e) {
+  async function handleLogin(e) {
     e.preventDefault();
+
     setError("");
 
-    const { email, password } = loginForm;
+    try {
+      await login(loginForm);
 
-    if (!email || !password) {
-      setError("Please fill in all fields.");
-      return;
+      navigate("/");
+    } catch (err) {
+      setError(getErrorMessage(err, "Login failed"));
     }
-
-    let role = "customer";
-
-    if (email === "admin@vertex.com") {
-      role = "admin";
-    } else if (email === "cashier@vertex.com") {
-      role = "cashier";
-    } else if (email === "tech@vertex.com") {
-      role = "technician";
-    }
-
-    login({
-      fullname: "Carl Madrigal",
-      email,
-      role,
-    });
-
-    navigate("/");
   }
 
-  function handleRegister(e) {
+  async function handleRegister(e) {
     e.preventDefault();
+
     setError("");
 
     const { fullname, email, password, confirmPassword } = registerForm;
 
-    if (!fullname || !email || !password || !confirmPassword) {
-      setError("Please fill in all fields.");
-      return;
-    }
-
     if (password !== confirmPassword) {
-      setError("Passwords do not match.");
+      setError("Passwords do not match");
+
       return;
     }
 
-    login({
-      fullname,
-      email,
-      role: "customer",
-    });
+    try {
+      const response = await register({
+        fullname,
+        email,
+        password,
+      });
 
-    navigate("/");
+      setTab("login");
+    } catch (err) {
+      setError(getErrorMessage(err, "Register failed"));
+    }
   }
 
   function handleGoogle() {
