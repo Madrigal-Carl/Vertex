@@ -3,7 +3,6 @@ import redis from "../../config/redis.js";
 import { sendEmail } from "../../services/email.service.js";
 import { EMAIL_JOBS } from "../email.jobs.js";
 
-import { welcomeEmailTemplate } from "../../templates/email/welcome.template.js";
 import { verifyEmailTemplate } from "../../templates/email/verify.template.js";
 import { resetPasswordTemplate } from "../../templates/email/reset-password.template.js";
 
