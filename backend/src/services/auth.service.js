@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
+import { OAuth2Client } from "google-auth-library";
 import emailQueue from "../queues/email.queue.js";
 import { EMAIL_JOBS } from "../queues/email.jobs.js";
 
@@ -70,6 +71,11 @@ export const loginUser = async ({ email, password }) => {
     throw new Error("Invalid credentials");
   }
 
+  // GOOGLE ACCOUNT
+  if (user.googleId) {
+    throw new Error("Please sign in with Google");
+  }
+
   const isPasswordValid = await bcrypt.compare(password, user.password);
 
   if (!isPasswordValid) {
@@ -86,6 +92,51 @@ export const loginUser = async ({ email, password }) => {
 
   return {
     user,
+    accessToken,
+    refreshToken,
+  };
+};
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+export const googleAuthUser = async (token) => {
+  const ticket = await client.verifyIdToken({
+    idToken: token,
+    audience: process.env.GOOGLE_CLIENT_ID,
+  });
+
+  const payload = ticket.getPayload();
+
+  const { sub: googleId, email, name, email_verified } = payload;
+
+  if (!email_verified) {
+    throw new Error("Google email not verified");
+  }
+
+  let user = await User.findOne({ email });
+
+  // CREATE USER
+  if (!user) {
+    user = await User.create({
+      fullname: name,
+      email,
+      googleId,
+      provider: "google",
+      isVerified: true,
+    });
+  }
+
+  const accessToken = generateAccessToken(user._id);
+
+  const refreshToken = generateRefreshToken(user._id);
+
+  return {
+    user: {
+      id: user._id,
+      fullname: user.fullname,
+      email: user.email,
+      role: user.role,
+    },
     accessToken,
     refreshToken,
   };

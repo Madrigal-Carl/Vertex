@@ -3,6 +3,7 @@ import {
   register,
   verifyEmail,
   login,
+  googleAuth,
   logout,
   getMe,
 } from "../controllers/auth.controller.js";
@@ -18,6 +19,7 @@ router.post("/register", validateRegister, register);
 router.get("/verify-email/:token", verifyEmail);
 router.post("/login", validateLogin, login);
 router.post("/logout", logout);
+router.post("/google", googleAuth);
 router.get("/me", protect, getMe);
 
 export default router;

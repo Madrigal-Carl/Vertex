@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
-import { FcGoogle } from "react-icons/fc";
 import PasswordInput from "@/components/ui/password-input";
 import { getErrorMessage } from "@/utils/getErrorMessage";
+import { GoogleLogin } from "@react-oauth/google";
 
 export default function AuthPage() {
   const navigate = useNavigate();
-  const { login, register } = useAuth();
+  const { login, register, googleLogin } = useAuth();
 
   const [tab, setTab] = useState("login");
   const [error, setError] = useState("");
@@ -76,16 +76,6 @@ export default function AuthPage() {
     } catch (err) {
       setError(getErrorMessage(err, "Register failed"));
     }
-  }
-
-  function handleGoogle() {
-    login({
-      fullname: "Google User",
-      email: "googleuser@gmail.com",
-      role: "customer",
-    });
-
-    navigate("/");
   }
 
   return (
@@ -265,16 +255,20 @@ export default function AuthPage() {
             <div className="flex-1 h-px bg-[#F0F5FA]" />
           </div>
 
-          {/* Google */}
-          <button
-            onClick={handleGoogle}
-            className="w-full py-3 border border-[#0F2436]/20 flex items-center justify-center gap-3 text-[#0F2436] font-sans text-sm hover:bg-[#F0F5FA] transition-colors"
-            style={{ borderRadius: "4px" }}
-          >
-            <FcGoogle className="w-6 h-6" />
+          <GoogleLogin
+            onSuccess={async (credentialResponse) => {
+              try {
+                await googleLogin(credentialResponse.credential);
 
-            {tab === "login" ? "Sign in with Google" : "Sign up with Google"}
-          </button>
+                navigate("/");
+              } catch (err) {
+                setError(getErrorMessage(err, "Google login failed"));
+              }
+            }}
+            onError={() => {
+              setError("Google login failed");
+            }}
+          />
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { createContext, useEffect, useState } from "react";
 import {
   loginUser,
   registerUser,
+  googleAuth as googleAuthService,
   logoutUser,
   getMe,
 } from "@/services/auth.service";
@@ -44,6 +45,14 @@ export const AuthProvider = ({ children }) => {
     return response;
   };
 
+  const googleLogin = async (token) => {
+    const response = await googleAuthService(token);
+
+    setUser(response.user);
+
+    return response;
+  };
+
   const logout = async () => {
     await logoutUser();
 
@@ -59,6 +68,7 @@ export const AuthProvider = ({ children }) => {
         role: user?.role || null,
         login,
         register,
+        googleLogin,
         logout,
       }}
     >

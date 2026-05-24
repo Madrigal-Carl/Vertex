@@ -8,6 +8,10 @@ const userSchema = new mongoose.Schema(
       minlength: 2,
       maxlength: 100,
     },
+    googleId: {
+      type: String,
+      default: null,
+    },
     email: {
       type: String,
       required: true,
@@ -17,8 +21,8 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
       minlength: 6,
+      select: false,
     },
     isVerified: {
       type: Boolean,

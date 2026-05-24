@@ -2,6 +2,7 @@ import {
   registerUser,
   verifyUserEmail,
   loginUser,
+  googleAuthUser,
   logoutUser,
 } from "../services/auth.service.js";
 import { sendTokenCookies } from "../utils/sendTokenCookies.js";
@@ -49,6 +50,23 @@ export const login = asyncHandler(async (req, res) => {
       email: user.email,
       role: user.role,
     },
+  });
+});
+
+export const googleAuth = asyncHandler(async (req, res) => {
+  const { accessToken, refreshToken, user } = await googleAuthUser(
+    req.body.token,
+  );
+
+  sendTokenCookies({
+    res,
+    accessToken,
+    refreshToken,
+  });
+
+  return res.json({
+    message: "Google login successful",
+    user,
   });
 });
 
