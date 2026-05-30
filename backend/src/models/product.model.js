@@ -17,27 +17,9 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    variants: [
-      {
-        sku: String,
-        attributes: {
-          color: String,
-          size: String,
-        },
-        price: {
-          original: {
-            type: Number,
-            required: true,
-          },
-          discounted: {
-            type: Number,
-            default: null,
-          },
-        },
-      },
-    ],
     images: [
       {
+        _id: false,
         url: String,
         isPrimary: {
           type: Boolean,
@@ -50,5 +32,22 @@ const productSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
+
+productSchema.virtual("categoryName", {
+  ref: "Category",
+  localField: "categoryId",
+  foreignField: "_id",
+  justOne: true,
+});
+
+productSchema.set("toObject", { virtuals: true });
+productSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret.id;
+    return ret;
+  },
+});
 
 export default mongoose.model("Product", productSchema);

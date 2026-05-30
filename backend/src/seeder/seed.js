@@ -1,19 +1,20 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import { faker } from "@faker-js/faker";
 
 dotenv.config();
-
-import { faker } from "@faker-js/faker";
 
 import User from "../models/user.model.js";
 import Category from "../models/category.model.js";
 import Product from "../models/product.model.js";
-import Review from "../models/rewiew.model.js";
+import Variant from "../models/variant.model.js";
+import Price from "../models/price.model.js";
+import Inventory from "../models/inventory.model.js";
+import Review from "../models/review.model.js";
 
 const MONGO_URI = process.env.MONGO_URI;
 
 const CATEGORIES = ["Laptops", "Phones", "Tablets", "Accessories", "Audio"];
-
 const PRODUCTS = {
   Laptops: [
     "MacBook Air M3",
@@ -39,7 +40,7 @@ const PRODUCTS = {
 
 async function seed() {
   try {
-    await mongoose.connect(MONGO_URI);
+    await mongoose.connect(process.env.MONGO_URI);
 
     console.log("Connected");
 
@@ -47,201 +48,223 @@ async function seed() {
       User.deleteMany({}),
       Category.deleteMany({}),
       Product.deleteMany({}),
+      Variant.deleteMany({}),
+      Price.deleteMany({}),
+      Inventory.deleteMany({}),
       Review.deleteMany({}),
     ]);
 
     console.log("Collections cleared");
 
-    // USERS
-    const users = [];
+    // ================= USERS =================
 
-    for (let i = 0; i < 10; i++) {
-      users.push({
+    const users = await User.insertMany(
+      Array.from({ length: 10 }).map(() => ({
         fullname: faker.person.fullName(),
         email: faker.internet.email().toLowerCase(),
         password: "password123",
         isVerified: true,
         role: "customer",
-      });
-    }
+      })),
+    );
 
-    const createdUsers = await User.insertMany(users);
+    console.log(`${users.length} users created`);
 
-    console.log(`${createdUsers.length} users created`);
+    // ================= CATEGORIES =================
 
-    // CATEGORIES
-    const createdCategories = await Category.insertMany(
+    const categories = await Category.insertMany(
       CATEGORIES.map((name) => ({ name })),
     );
 
-    console.log(`${createdCategories.length} categories created`);
+    console.log(`${categories.length} categories created`);
 
-    // PRODUCTS
     const products = [];
+    const variants = [];
+    const prices = [];
+    const inventoryItems = [];
 
-    for (const category of createdCategories) {
-      const names = PRODUCTS[category.name];
+    // ================= PRODUCTS =================
 
-      for (const productName of names) {
-        let variants = [];
+    for (const category of categories) {
+      const productNames = PRODUCTS[category.name];
+
+      for (const productName of productNames) {
+        const imageCount = faker.number.int({
+          min: 3,
+          max: 5,
+        });
+
+        const product = await Product.create({
+          categoryId: category._id,
+          name: productName,
+          description: faker.commerce.productDescription(),
+          images: Array.from({ length: imageCount }).map((_, index) => ({
+            url: faker.image.urlPicsumPhotos({
+              width: 600,
+              height: 600,
+            }),
+            isPrimary: index === 0,
+          })),
+        });
+
+        products.push(product);
+
+        // ============================================
+        // VARIANTS
+        // ============================================
+
+        let variantDefinitions = [];
 
         if (category.name === "Phones" || category.name === "Tablets") {
-          variants = [
+          variantDefinitions = [
             {
-              sku: faker.string.alphanumeric(10).toUpperCase(),
               attributes: {
                 color: "Black",
                 storage: "128GB",
               },
-              price: {
-                original: 25000,
-                discounted: 22000,
-              },
+              price: 25000,
             },
             {
-              sku: faker.string.alphanumeric(10).toUpperCase(),
               attributes: {
                 color: "Black",
                 storage: "256GB",
               },
-              price: {
-                original: 30000,
-                discounted: 27000,
-              },
+              price: 30000,
             },
             {
-              sku: faker.string.alphanumeric(10).toUpperCase(),
               attributes: {
                 color: "White",
                 storage: "512GB",
               },
-              price: {
-                original: 40000,
-                discounted: 36000,
-              },
+              price: 40000,
             },
           ];
         }
 
         if (category.name === "Laptops") {
-          variants = [
+          variantDefinitions = [
             {
-              sku: faker.string.alphanumeric(10).toUpperCase(),
               attributes: {
                 color: "Silver",
                 ram: "8GB",
                 storage: "256GB SSD",
               },
-              price: {
-                original: 45000,
-                discounted: 42000,
-              },
+              price: 45000,
             },
             {
-              sku: faker.string.alphanumeric(10).toUpperCase(),
               attributes: {
                 color: "Silver",
                 ram: "16GB",
                 storage: "512GB SSD",
               },
-              price: {
-                original: 60000,
-                discounted: 55000,
-              },
+              price: 65000,
             },
           ];
         }
 
         if (category.name === "Accessories" || category.name === "Audio") {
-          variants = [
+          variantDefinitions = [
             {
-              sku: faker.string.alphanumeric(10).toUpperCase(),
               attributes: {
+                color: "Black",
                 size: "Small",
-                color: "Black",
               },
-              price: {
-                original: 1000,
-                discounted: 900,
-              },
+              price: 1000,
             },
             {
-              sku: faker.string.alphanumeric(10).toUpperCase(),
               attributes: {
+                color: "Black",
                 size: "Medium",
-                color: "Black",
               },
-              price: {
-                original: 1200,
-                discounted: 1000,
-              },
+              price: 1500,
             },
             {
-              sku: faker.string.alphanumeric(10).toUpperCase(),
               attributes: {
-                size: "Large",
                 color: "Black",
+                size: "Large",
               },
-              price: {
-                original: 1500,
-                discounted: 1300,
-              },
+              price: 2000,
             },
           ];
         }
 
-        products.push({
-          categoryId: category._id,
-          name: productName,
-          description: faker.commerce.productDescription(),
-          variants,
-          images: [
-            {
-              url: faker.image.urlPicsumPhotos({
-                width: 600,
-                height: 600,
-              }),
-              isPrimary: true,
-            },
-          ],
-        });
+        for (const definition of variantDefinitions) {
+          const variant = await Variant.create({
+            productId: product._id,
+            sku: faker.string.alphanumeric(10).toUpperCase(),
+            attributes: definition.attributes,
+          });
+
+          variants.push(variant);
+
+          const discountedPrice = faker.datatype.boolean()
+            ? Math.floor(definition.price * 0.9)
+            : null;
+
+          const price = await Price.create({
+            variantId: variant._id,
+            originalPrice: definition.price,
+            discountedPrice,
+          });
+
+          prices.push(price);
+
+          // ============================================
+          // INVENTORY ITEMS
+          // ============================================
+
+          const stockCount = faker.number.int({
+            min: 5,
+            max: 20,
+          });
+
+          const inventory = Array.from({
+            length: stockCount,
+          }).map(() => ({
+            variantId: variant._id,
+            serialNumber: faker.string.uuid(),
+            status: "available",
+          }));
+
+          const createdInventory = await Inventory.insertMany(inventory);
+
+          inventoryItems.push(...createdInventory);
+        }
       }
     }
 
-    const createdProducts = await Product.insertMany(products);
+    console.log(`${products.length} products created`);
+    console.log(`${variants.length} variants created`);
+    console.log(`${prices.length} prices created`);
+    console.log(`${inventoryItems.length} inventory items created`);
 
-    console.log(`${createdProducts.length} products created`);
+    // ================= PRODUCT REVIEWS =================
 
-    // PRODUCT REVIEWS
     const productReviews = [];
 
-    for (const product of createdProducts) {
+    for (const product of products) {
       const reviewCount = faker.number.int({
         min: 3,
         max: 10,
       });
 
       for (let i = 0; i < reviewCount; i++) {
-        const randomUser =
-          createdUsers[
+        const user =
+          users[
             faker.number.int({
               min: 0,
-              max: createdUsers.length - 1,
+              max: users.length - 1,
             })
           ];
 
         productReviews.push({
-          userId: randomUser._id,
-
+          userId: user._id,
           targetType: "product",
-
           targetId: product._id,
-
           rating: faker.number.int({
             min: 3,
             max: 5,
           }),
-
           comment: faker.helpers.arrayElement([
             "Excellent quality product.",
             "Worth every peso.",
@@ -254,19 +277,14 @@ async function seed() {
       }
     }
 
-    // WEBSITE REVIEWS
-    const websiteReviews = createdUsers.map((user) => ({
+    const websiteReviews = users.map((user) => ({
       userId: user._id,
-
       targetType: "website",
-
       targetId: null,
-
       rating: faker.number.int({
         min: 4,
         max: 5,
       }),
-
       comment: faker.helpers.arrayElement([
         "Easy to use website.",
         "Checkout process was smooth.",
