@@ -8,7 +8,6 @@ import User from "../models/user.model.js";
 import Category from "../models/category.model.js";
 import Product from "../models/product.model.js";
 import Variant from "../models/variant.model.js";
-import Price from "../models/price.model.js";
 import Inventory from "../models/inventory.model.js";
 import Review from "../models/review.model.js";
 
@@ -49,7 +48,6 @@ async function seed() {
       Category.deleteMany({}),
       Product.deleteMany({}),
       Variant.deleteMany({}),
-      Price.deleteMany({}),
       Inventory.deleteMany({}),
       Review.deleteMany({}),
     ]);
@@ -78,15 +76,16 @@ async function seed() {
 
     console.log(`${categories.length} categories created`);
 
+    // ================= PRODUCTS =================
+
     const products = [];
     const variants = [];
-    const prices = [];
     const inventoryItems = [];
-
-    // ================= PRODUCTS =================
 
     for (const category of categories) {
       const productNames = PRODUCTS[category.name];
+
+      if (!productNames) continue;
 
       for (const productName of productNames) {
         const imageCount = faker.number.int({
@@ -98,6 +97,9 @@ async function seed() {
           categoryId: category._id,
           name: productName,
           description: faker.commerce.productDescription(),
+
+          discount: faker.helpers.arrayElement([0, 5, 10, 15, 20]),
+
           images: Array.from({ length: imageCount }).map((_, index) => ({
             url: faker.image.urlPicsumPhotos({
               width: 600,
@@ -109,11 +111,9 @@ async function seed() {
 
         products.push(product);
 
-        // ============================================
-        // VARIANTS
-        // ============================================
-
         let variantDefinitions = [];
+
+        // ================= PHONES / TABLETS =================
 
         if (category.name === "Phones" || category.name === "Tablets") {
           variantDefinitions = [
@@ -141,6 +141,8 @@ async function seed() {
           ];
         }
 
+        // ================= LAPTOPS =================
+
         if (category.name === "Laptops") {
           variantDefinitions = [
             {
@@ -161,6 +163,8 @@ async function seed() {
             },
           ];
         }
+
+        // ================= ACCESSORIES / AUDIO =================
 
         if (category.name === "Accessories" || category.name === "Audio") {
           variantDefinitions = [
@@ -188,30 +192,22 @@ async function seed() {
           ];
         }
 
+        // ================= VARIANTS =================
+
         for (const definition of variantDefinitions) {
           const variant = await Variant.create({
             productId: product._id,
+
             sku: faker.string.alphanumeric(10).toUpperCase(),
+
             attributes: definition.attributes,
+
+            price: definition.price,
           });
 
           variants.push(variant);
 
-          const discountedPrice = faker.datatype.boolean()
-            ? Math.floor(definition.price * 0.9)
-            : null;
-
-          const price = await Price.create({
-            variantId: variant._id,
-            originalPrice: definition.price,
-            discountedPrice,
-          });
-
-          prices.push(price);
-
-          // ============================================
-          // INVENTORY ITEMS
-          // ============================================
+          // ================= INVENTORY =================
 
           const stockCount = faker.number.int({
             min: 5,
@@ -222,8 +218,23 @@ async function seed() {
             length: stockCount,
           }).map(() => ({
             variantId: variant._id,
+
             serialNumber: faker.string.uuid(),
-            status: "available",
+
+            status: faker.helpers.weightedArrayElement([
+              {
+                weight: 80,
+                value: "available",
+              },
+              {
+                weight: 10,
+                value: "reserved",
+              },
+              {
+                weight: 10,
+                value: "sold",
+              },
+            ]),
           }));
 
           const createdInventory = await Inventory.insertMany(inventory);
@@ -235,7 +246,6 @@ async function seed() {
 
     console.log(`${products.length} products created`);
     console.log(`${variants.length} variants created`);
-    console.log(`${prices.length} prices created`);
     console.log(`${inventoryItems.length} inventory items created`);
 
     // ================= PRODUCT REVIEWS =================
