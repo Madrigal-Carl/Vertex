@@ -229,25 +229,6 @@ export default function ProductDetailPage() {
               <ShoppingCart size={18} />
               Add to Cart
             </button>
-
-            <div className="grid grid-cols-3 gap-3 mt-6">
-              {[
-                ["Fast Delivery", "Same-day Metro Manila"],
-                ["Secure Payment", "256-bit SSL"],
-                ["2 Yr Warranty", "Full coverage"],
-              ].map(([t, d]) => (
-                <div
-                  key={t}
-                  className="text-center p-3 bg-[#F0F5FA]"
-                  style={{ borderRadius: "4px" }}
-                >
-                  <p className="font-display text-[#0F2436] text-xs font-bold">
-                    {t}
-                  </p>
-                  <p className="text-[10px] text-[#5E7386] mt-0.5">{d}</p>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
 
