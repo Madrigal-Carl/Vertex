@@ -17,6 +17,12 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    discount: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 100,
+    },
     images: [
       {
         _id: false,
@@ -33,6 +39,26 @@ const productSchema = new mongoose.Schema(
   },
 );
 
+// =====================
+// METHODS
+// =====================
+
+productSchema.methods.hasDiscount = function () {
+  return this.discount > 0;
+};
+
+productSchema.methods.getDiscountedPrice = function (price) {
+  if (!this.hasDiscount()) {
+    return price;
+  }
+
+  return Math.round(price * (1 - this.discount / 100));
+};
+
+// =====================
+// VIRTUALS
+// =====================
+
 productSchema.virtual("categoryName", {
   ref: "Category",
   localField: "categoryId",
@@ -41,10 +67,11 @@ productSchema.virtual("categoryName", {
 });
 
 productSchema.set("toObject", { virtuals: true });
+
 productSchema.set("toJSON", {
   virtuals: true,
   versionKey: false,
-  transform: function (doc, ret) {
+  transform(doc, ret) {
     delete ret.id;
     return ret;
   },

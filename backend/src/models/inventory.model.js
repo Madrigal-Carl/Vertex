@@ -23,4 +23,12 @@ const inventorySchema = new mongoose.Schema(
   },
 );
 
+// =====================
+// METHODS
+// =====================
+
+inventorySchema.methods.isAvailable = function () {
+  return this.status === "available";
+};
+
 export default mongoose.model("Inventory", inventorySchema);

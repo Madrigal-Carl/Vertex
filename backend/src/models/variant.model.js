@@ -16,6 +16,10 @@ const variantSchema = new mongoose.Schema(
       type: Map,
       of: String,
     },
+    price: {
+      type: Number,
+      required: true,
+    },
   },
   {
     timestamps: true,
