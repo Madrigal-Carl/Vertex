@@ -69,3 +69,24 @@ export const protect = async (req, res, next) => {
     });
   }
 };
+
+export const optionalAuth = async (req, res, next) => {
+  try {
+    const token = req.cookies.accessToken;
+
+    if (!token) {
+      req.user = null;
+      return next();
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+
+    const user = await User.findById(decoded.userId).select("-password");
+
+    req.user = user || null;
+    next();
+  } catch {
+    req.user = null;
+    next();
+  }
+};
