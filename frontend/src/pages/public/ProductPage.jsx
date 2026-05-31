@@ -27,7 +27,7 @@ export default function Products() {
 
         const updated = {
           ...params,
-          search: v,
+          search: input,
           page: 1,
         };
 
