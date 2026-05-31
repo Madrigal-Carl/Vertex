@@ -10,7 +10,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import { useCartStore } from "@/stores/useCartStore";
+import { useCart } from "@/hooks/useCart";
 import useAuth from "@/hooks/useAuth";
 
 function VertexLogo() {
@@ -46,11 +46,7 @@ const navLinks = [
 ];
 
 export default function Navbar() {
-  const count = useCartStore((state) => state.items).reduce(
-    (sum, item) => sum + item.quantity,
-    0,
-  );
-  const openDrawer = useCartStore((state) => state.openDrawer);
+  const { totalItems, openDrawer } = useCart();
   const { user, loading, isAuthenticated: isLoggedIn, logout } = useAuth();
   const location = useLocation();
   const [profileOpen, setProfileOpen] = useState(false);
@@ -85,12 +81,12 @@ export default function Navbar() {
             className="relative w-10 h-10 flex items-center justify-center text-white/80 hover:text-white transition-colors"
           >
             <ShoppingCart size={20} />
-            {count > 0 && (
+            {totalItems > 0 && (
               <span
                 className="absolute -top-1 -right-1 w-5 h-5 bg-[#E63946] text-white text-xs font-display flex items-center justify-center"
                 style={{ borderRadius: "2px" }}
               >
-                {count}
+                {totalItems}
               </span>
             )}
           </button>

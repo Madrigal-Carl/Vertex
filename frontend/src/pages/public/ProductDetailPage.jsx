@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import StarRating from "@/components/public/StarRating";
 import ProductCard from "@/components/public/ProductCard";
 import { PRODUCTS } from "@/constants/products";
-import { useCartStore } from "@/stores/useCartStore";
+import { useCart } from "@/hooks/useCart";
 
 const COLORS = ["Midnight Blue", "Silver", "Matte Black"];
 const SIZES = ["64GB", "128GB", "256GB"];
@@ -49,7 +49,7 @@ export default function ProductDetailPage() {
   const [reviewRating, setReviewRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
-  const { addItem, openDrawer } = useCartStore();
+  const { addItem, openDrawer } = useCart();
 
   const recommended = PRODUCTS.slice(0, 4);
 

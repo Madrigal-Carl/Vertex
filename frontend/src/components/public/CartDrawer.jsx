@@ -1,11 +1,6 @@
 import { X, Plus, Minus, Trash2 } from "lucide-react";
-import {
-  useCartStore,
-  useCartTotal,
-  useCartCount,
-} from "@/stores/useCartStore";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useCart } from "@/hooks/useCart";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
 
 function formatPrice(p) {
@@ -14,10 +9,15 @@ function formatPrice(p) {
 }
 
 export default function CartDrawer() {
-  const { items, drawerOpen, closeDrawer, removeItem, updateQuantity } =
-    useCartStore();
-  const total = useCartTotal();
-  const count = useCartCount();
+  const {
+    items,
+    drawerOpen,
+    closeDrawer,
+    removeItem,
+    updateQuantity,
+    totalPrice,
+    totalItems,
+  } = useCart();
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -53,7 +53,7 @@ export default function CartDrawer() {
               Your Cart
             </h2>
             <p className="text-xs text-white/50 font-sans mt-0.5">
-              {count} item{count !== 1 ? "s" : ""}
+              {totalItems} item{totalItems !== 1 ? "s" : ""}
             </p>
           </div>
           <button
@@ -154,7 +154,7 @@ export default function CartDrawer() {
             <div className="space-y-2 mb-4">
               <div className="flex justify-between text-sm font-sans text-[#5E7386]">
                 <span>Subtotal</span>
-                <span>{formatPrice(total)}</span>
+                <span>{formatPrice(totalPrice)}</span>
               </div>
               <div className="flex justify-between text-sm font-sans text-[#5E7386]">
                 <span>Shipping</span>
@@ -162,7 +162,7 @@ export default function CartDrawer() {
               </div>
               <div className="flex justify-between font-display font-bold text-[#0F2436] text-lg pt-2 border-t border-border">
                 <span>Total</span>
-                <span>{formatPrice(total)}</span>
+                <span>{formatPrice(totalPrice)}</span>
               </div>
             </div>
             <Link to="/checkout" onClick={handleCheckout}>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useCartStore, useCartTotal } from "@/stores/useCartStore";
+import { useCart } from "@/hooks/useCart";
 import {
   CheckCircle,
   MapPin,
@@ -32,8 +32,7 @@ const SAVED_ADDRESS = {
 };
 
 export default function CheckoutPage() {
-  const { items } = useCartStore();
-  const total = useCartTotal();
+  const { items, totalPrice } = useCart();
   const [delivery, setDelivery] = useState("pickup");
   const [payment, setPayment] = useState("cod");
   const [placed, setPlaced] = useState(false);
@@ -147,7 +146,7 @@ export default function CheckoutPage() {
               >
                 <div className="flex justify-between text-sm font-sans text-[#5E7386]">
                   <span>Subtotal</span>
-                  <span>{formatPrice(total)}</span>
+                  <span>{formatPrice(totalPrice)}</span>
                 </div>
                 <div className="flex justify-between text-sm font-sans text-[#5E7386]">
                   <span>Shipping</span>
@@ -161,7 +160,7 @@ export default function CheckoutPage() {
                 </div>
                 <div className="flex justify-between font-display font-bold text-[#0F2436] text-2xl border-t border-[#0F2436]/10 pt-3 mt-1">
                   <span>Total</span>
-                  <span>{formatPrice(total + shipping)}</span>
+                  <span>{formatPrice(totalPrice + shipping)}</span>
                 </div>
               </div>
             </div>
@@ -324,7 +323,7 @@ export default function CheckoutPage() {
               className="w-full py-4 bg-[#E63946] text-white font-display tracking-widest text-sm uppercase hover:bg-[#cc2f3b] transition-colors active:scale-95"
               style={{ borderRadius: "6px" }}
             >
-              Place Order — {formatPrice(total + shipping)}
+              Place Order — {formatPrice(totalPrice + shipping)}
             </button>
             <p className="text-center text-[10px] text-[#5E7386] font-sans">
               By placing this order you agree to our Terms of Service and Refund

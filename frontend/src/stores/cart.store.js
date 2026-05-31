@@ -80,9 +80,7 @@ export const useCartStore = create(
           items: state.items.map((i) => {
             if (i.id === id && i.color === color && i.size === size) {
               const newQty = i.quantity + delta;
-
               if (newQty <= 0) return i;
-
               return { ...i, quantity: newQty };
             }
             return i;
@@ -91,18 +89,7 @@ export const useCartStore = create(
       },
     }),
     {
-      name: "vertex-cart", // localStorage key
+      name: "vertex-cart",
     },
   ),
 );
-
-// selectors (computed values)
-export const useCartTotal = () =>
-  useCartStore((state) =>
-    state.items.reduce((sum, item) => sum + item.price * item.quantity, 0),
-  );
-
-export const useCartCount = () =>
-  useCartStore((state) =>
-    state.items.reduce((sum, item) => sum + item.quantity, 0),
-  );
