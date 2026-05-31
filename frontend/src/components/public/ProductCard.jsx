@@ -4,7 +4,7 @@ function formatPrice(p) {
   return `₱${p.toLocaleString()}`;
 }
 
-function StarRating({ rating, reviewCount }) {
+function StarRating({ rating = 0, reviewCount = 0 }) {
   const full = Math.floor(rating);
   const partial = rating - full;
   const empty = 5 - Math.ceil(rating);
@@ -63,68 +63,69 @@ function StarRating({ rating, reviewCount }) {
         ))}
       </div>
       <span className="text-[11px] font-display text-[#0F2436] font-semibold">
-        {rating.toFixed(1)}
+        {(rating || 0).toFixed(1)}
       </span>
       <span className="text-[10px] text-[#5E7386] font-sans">
-        ({reviewCount.toLocaleString()})
+        ({(reviewCount || 0).toLocaleString()})
       </span>
     </div>
   );
 }
 
 export default function ProductCard({ product }) {
-  const discount = product.originalPrice
-    ? Math.round((1 - product.price / product.originalPrice) * 100)
-    : null;
-
   return (
     <div
-      data-testid={`card-product-${product.id}`}
+      data-testid={`card-product-${product._id}`}
       className="bg-card border border-border flex flex-col group transition-shadow hover:shadow-md"
       style={{ borderRadius: "8px", overflow: "hidden" }}
     >
       <div
-        className={`relative h-44 bg-gradient-to-br ${product.imageColor} flex items-center justify-center`}
+        className="relative h-44 flex items-center justify-center bg-cover bg-center"
+        style={{
+          backgroundImage: `url(${
+            product.images?.find((img) => img.isPrimary)?.url ||
+            product.images?.[0]?.url ||
+            ""
+          })`,
+        }}
       >
-        {discount && (
+        {product.discount > 0 && (
           <span
             className="absolute top-3 left-3 bg-[#E63946] text-white text-xs font-display tracking-widest px-2 py-1 uppercase"
             style={{ borderRadius: "2px" }}
           >
-            -{discount}%
+            -{product.discount}%
           </span>
         )}
-        <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
-          <span className="font-display text-white/60 text-xs tracking-widest uppercase">
-            {product.category.slice(0, 3)}
-          </span>
-        </div>
       </div>
 
       <div className="p-4 flex flex-col flex-1 gap-2">
         <p className="text-xs font-display tracking-[0.12em] text-[#5E7386] uppercase">
-          {product.category}
+          {product.categoryId?.name}
         </p>
         <h3 className="font-display font-semibold text-[#0F2436] text-base leading-tight">
           {product.name}
         </h3>
-        <StarRating rating={product.rating} reviewCount={product.reviewCount} />
+        <StarRating
+          rating={product.averageRating}
+          reviewCount={product.reviewCount}
+        />
         <p className="text-xs text-[#5E7386] font-sans leading-relaxed flex-1">
           {product.description}
         </p>
         <div className="flex items-baseline gap-2 mt-1">
           <span className="font-display font-bold text-[#0F2436] text-lg">
-            {formatPrice(product.price)}
+            {formatPrice(product.price * (1 - (product.discount || 0) / 100))}
           </span>
-          {product.originalPrice && (
+          {product.price && (
             <span className="text-xs text-[#5E7386] line-through">
-              {formatPrice(product.originalPrice)}
+              {formatPrice(product.price)}
             </span>
           )}
         </div>
-        <Link to={`/product/${product.id}`}>
+        <Link to={`/product/${product._id}`}>
           <button
-            data-testid={`btn-view-${product.id}`}
+            data-testid={`btn-view-${product._id}`}
             className="w-full mt-2 py-2.5 border border-[#0F2436] text-[#0F2436] font-display tracking-widest text-xs uppercase transition-all hover:bg-[#0F2436] hover:text-white active:scale-95"
             style={{ borderRadius: "4px" }}
           >

@@ -3,8 +3,11 @@ import { Link } from "react-router-dom";
 import HeroCarousel from "@/components/public/HeroCarousel";
 import ProductCard from "@/components/public/ProductCard";
 import StarRating from "@/components/public/StarRating";
-import { PRODUCTS } from "@/constants/products";
 import ReviewModal from "@/components/modals/ReviewModal";
+import {
+  useFeaturedProducts,
+  usePopularProducts,
+} from "@/hooks/queries/useProductQueries";
 import { useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
 import useProtectedAction from "@/hooks/useProtectedAction";
@@ -20,9 +23,6 @@ import {
   Wifi,
   Monitor,
 } from "lucide-react";
-
-const deals = PRODUCTS.filter((p) => p.originalPrice).slice(0, 4);
-const popular = PRODUCTS.slice(4, 8);
 
 const offers = [
   {
@@ -94,6 +94,12 @@ const reviews = [
 export default function Home() {
   const [showReviewModal, setShowReviewModal] = useState(false);
 
+  const { data: deals = [], isLoading: featuredLoading } =
+    useFeaturedProducts();
+
+  const { data: popular = [], isLoading: popularLoading } =
+    usePopularProducts();
+
   const navigate = useNavigate();
   const protectedAction = useProtectedAction();
   const { user } = useAuth();
@@ -160,9 +166,11 @@ export default function Home() {
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {deals.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
+            {featuredLoading ? (
+              <p>Loading featured products...</p>
+            ) : (
+              deals.map((p) => <ProductCard key={p._id} product={p} />)
+            )}
           </div>
           <div className="text-center">
             <Link to="/products">
@@ -191,9 +199,11 @@ export default function Home() {
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {popular.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
+            {popularLoading ? (
+              <p>Loading popular products...</p>
+            ) : (
+              popular.map((p) => <ProductCard key={p._id} product={p} />)
+            )}
           </div>
           <div className="text-center">
             <Link to="/products">

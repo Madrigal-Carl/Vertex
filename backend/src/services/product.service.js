@@ -25,11 +25,33 @@ const getRatingStats = async (productId) => {
   return stats[0] || { averageRating: 0, reviewCount: 0 };
 };
 
+const getMinVariantPrice = async (productId) => {
+  const result = await Variant.aggregate([
+    {
+      $match: {
+        productId: new mongoose.Types.ObjectId(productId),
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        minPrice: { $min: "$price" },
+      },
+    },
+  ]);
+
+  return result[0]?.minPrice || 0;
+};
+
 const enrichProduct = async (product) => {
-  const stats = await getRatingStats(product._id);
+  const [stats, price] = await Promise.all([
+    getRatingStats(product._id),
+    getMinVariantPrice(product._id),
+  ]);
 
   return {
     ...product.toObject(),
+    price,
     averageRating: Number(stats.averageRating?.toFixed(1) || 0),
     reviewCount: stats.reviewCount || 0,
   };
@@ -85,8 +107,6 @@ export const getPopularProductsService = async () => {
         status: "sold",
       },
     },
-
-    // Join variants
     {
       $lookup: {
         from: "variants",
@@ -95,26 +115,20 @@ export const getPopularProductsService = async () => {
         as: "variant",
       },
     },
-
     {
       $unwind: "$variant",
     },
-
-    // Group by productId
     {
       $group: {
         _id: "$variant.productId",
         soldCount: { $sum: 1 },
       },
     },
-
-    // Most sold first
     {
       $sort: {
         soldCount: -1,
       },
     },
-
     {
       $limit: 4,
     },
@@ -126,29 +140,25 @@ export const getPopularProductsService = async () => {
     _id: { $in: productIds },
   }).populate("categoryId", "name");
 
-  const enrichedProducts = await Promise.all(
-    products.map(async (product) => {
-      const stats = await getRatingStats(product._id);
+  // enrich all products (NOW CONSISTENT WITH FEATURED)
+  const enriched = await Promise.all(products.map(enrichProduct));
 
-      const soldData = popularProducts.find(
-        (item) => item._id.toString() === product._id.toString(),
-      );
+  // attach soldCount
+  const enrichedWithSales = enriched.map((product) => {
+    const match = popularProducts.find(
+      (p) => p._id.toString() === product._id.toString(),
+    );
 
-      return {
-        ...product.toObject(),
-        soldCount: soldData?.soldCount || 0,
-        averageRating: Number(stats.averageRating?.toFixed(1) || 0),
-        reviewCount: stats.reviewCount || 0,
-      };
-    }),
-  );
+    return {
+      ...product,
+      soldCount: match?.soldCount || 0,
+    };
+  });
 
-  // preserve aggregate order
+  // preserve order from aggregation
   return productIds
     .map((id) =>
-      enrichedProducts.find(
-        (product) => product._id.toString() === id.toString(),
-      ),
+      enrichedWithSales.find((p) => p._id.toString() === id.toString()),
     )
     .filter(Boolean);
 };
