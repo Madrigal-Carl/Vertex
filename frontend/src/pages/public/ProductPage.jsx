@@ -1,41 +1,94 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search } from "lucide-react";
-import { PRODUCTS } from "@/constants/products";
+import { useProducts } from "@/hooks/queries/useProductQueries";
+import { useCategories } from "@/hooks/queries/useCategoryQueries";
 import ProductCard from "@/components/public/ProductCard";
-
-const CATEGORIES = [
-  "All",
-  "Laptops",
-  "Phones",
-  "Tablets",
-  "Accessories",
-  "Audio",
-];
-const PER_PAGE = 8;
+import { useSearchParams } from "react-router-dom";
+import { ChevronDown } from "lucide-react";
 
 export default function Products() {
-  const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("All");
-  const [page, setPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const filtered = PRODUCTS.filter((p) => {
-    const matchesCat = category === "All" || p.category === category;
-    const matchesSearch =
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.description.toLowerCase().includes(search.toLowerCase());
-    return matchesCat && matchesSearch;
+  const search = searchParams.get("search") || "";
+  const category = searchParams.get("category") || "All";
+  const page = Number(searchParams.get("page") || 1);
+
+  const [input, setInput] = useState(search);
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+
+  const PER_PAGE = 8;
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setDebouncedSearch(input);
+
+      setSearchParams((prev) => {
+        const params = Object.fromEntries(prev);
+
+        const updated = {
+          ...params,
+          search: v,
+          page: 1,
+        };
+
+        return cleanParams(updated);
+      });
+    }, 400);
+
+    return () => clearTimeout(t);
+  }, [input]);
+
+  const { data } = useProducts({
+    page,
+    limit: PER_PAGE,
+    category,
+    search: debouncedSearch,
   });
 
-  const totalPages = Math.ceil(filtered.length / PER_PAGE);
-  const paged = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+  const products = data?.products || [];
+  const pagination = data?.pagination || {};
+  const totalPages = pagination.pages || 1;
 
-  function handleSearch(v) {
-    setSearch(v);
-    setPage(1);
-  }
+  const { data: categoriesData } = useCategories();
+  const CATEGORIES = ["All", ...(categoriesData?.map((c) => c.name) || [])];
+
   function handleCategory(v) {
-    setCategory(v);
-    setPage(1);
+    setSearchParams((prev) => {
+      const params = Object.fromEntries(prev);
+
+      const updated = {
+        ...params,
+        category: v,
+        page: 1,
+      };
+
+      return cleanParams(updated);
+    });
+  }
+
+  function updatePage(p) {
+    setSearchParams((prev) => {
+      const params = Object.fromEntries(prev);
+
+      const updated = {
+        ...params,
+        page: String(p),
+      };
+
+      return cleanParams(updated);
+    });
+  }
+
+  function cleanParams(params) {
+    const cleaned = {};
+
+    Object.entries(params).forEach(([key, value]) => {
+      if (value && value !== "All" && value !== "") {
+        cleaned[key] = value;
+      }
+    });
+
+    return cleaned;
   }
 
   return (
@@ -58,28 +111,32 @@ export default function Products() {
               className="absolute left-3 top-1/2 -translate-y-1/2 text-[#5E7386]"
             />
             <input
-              data-testid="input-search"
-              type="search"
               placeholder="Search products..."
-              value={search}
-              onChange={(e) => handleSearch(e.target.value)}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
               className="w-full pl-10 pr-4 py-3 bg-white border border-[#0F2436]/20 text-[#0F2436] text-sm font-sans focus:outline-none focus:border-[#0F2436] transition-colors"
               style={{ borderRadius: "4px" }}
             />
           </div>
-          <select
-            data-testid="select-category"
-            value={category}
-            onChange={(e) => handleCategory(e.target.value)}
-            className="px-4 py-3 bg-white border border-[#0F2436]/20 text-[#0F2436] text-sm font-sans focus:outline-none focus:border-[#0F2436] min-w-[180px] transition-colors cursor-pointer"
-            style={{ borderRadius: "4px" }}
-          >
-            {CATEGORIES.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
+          <div className="relative min-w-[180px]">
+            <select
+              value={category}
+              onChange={(e) => handleCategory(e.target.value)}
+              className="w-full appearance-none px-4 py-3 pr-10 bg-white border border-[#0F2436]/20 text-[#0F2436] text-sm font-sans focus:outline-none focus:border-[#0F2436] transition-colors cursor-pointer"
+              style={{ borderRadius: "4px" }}
+            >
+              {CATEGORIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+
+            <ChevronDown
+              size={16}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#5E7386] pointer-events-none"
+            />
+          </div>
         </div>
 
         {/* Category pills */}
@@ -103,11 +160,12 @@ export default function Products() {
 
         <div className="flex items-center justify-between mb-6">
           <p className="text-sm text-[#5E7386] font-sans">
-            {filtered.length} product{filtered.length !== 1 ? "s" : ""} found
+            {pagination.total || 0} product{pagination.total !== 1 ? "s" : ""}{" "}
+            found
           </p>
         </div>
 
-        {paged.length === 0 ? (
+        {products.length === 0 ? (
           <div className="py-24 text-center">
             <p className="font-display text-[#0F2436] text-xl mb-2">
               No products found
@@ -118,8 +176,8 @@ export default function Products() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-            {paged.map((p) => (
-              <ProductCard key={p.id} product={p} />
+            {products.map((p) => (
+              <ProductCard key={p._id} product={p} />
             ))}
           </div>
         )}
@@ -128,7 +186,7 @@ export default function Products() {
           <div className="flex items-center justify-center gap-2">
             <button
               data-testid="btn-prev-page"
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              onClick={() => updatePage(page - 1)}
               disabled={page === 1}
               className="px-4 py-2 border border-[#0F2436]/30 text-[#0F2436] font-display tracking-widest text-xs uppercase disabled:opacity-40 hover:bg-[#0F2436] hover:text-white transition-all"
               style={{ borderRadius: "4px" }}
@@ -139,7 +197,7 @@ export default function Products() {
               <button
                 key={n}
                 data-testid={`btn-page-${n}`}
-                onClick={() => setPage(n)}
+                onClick={() => updatePage(n)}
                 className={`w-10 h-10 font-display text-sm transition-all ${
                   page === n
                     ? "bg-[#0F2436] text-white"
@@ -152,7 +210,7 @@ export default function Products() {
             ))}
             <button
               data-testid="btn-next-page"
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              onClick={() => updatePage(page + 1)}
               disabled={page === totalPages}
               className="px-4 py-2 border border-[#0F2436]/30 text-[#0F2436] font-display tracking-widest text-xs uppercase disabled:opacity-40 hover:bg-[#0F2436] hover:text-white transition-all"
               style={{ borderRadius: "4px" }}

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   getFeaturedProducts,
   getPopularProducts,
+  getProducts,
 } from "@/services/product.service";
 
 export const useFeaturedProducts = () => {
@@ -16,5 +17,13 @@ export const usePopularProducts = () => {
   return useQuery({
     queryKey: ["popular-products"],
     queryFn: getPopularProducts,
+  });
+};
+
+export const useProducts = ({ page, limit, category, search }) => {
+  return useQuery({
+    queryKey: ["products", page, limit, category, search],
+    queryFn: () => getProducts({ page, limit, category, search }),
+    keepPreviousData: true,
   });
 };

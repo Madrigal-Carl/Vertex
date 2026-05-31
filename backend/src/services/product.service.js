@@ -4,6 +4,7 @@ import Product from "../models/product.model.js";
 import Review from "../models/review.model.js";
 import Inventory from "../models/inventory.model.js";
 import Variant from "../models/variant.model.js";
+import Category from "../models/category.model.js";
 
 const getRatingStats = async (productId) => {
   const stats = await Review.aggregate([
@@ -57,12 +58,48 @@ const enrichProduct = async (product) => {
   };
 };
 
-export const getAllProducts = async () => {
-  const products = await Product.find()
-    .populate("categoryId", "name")
-    .sort({ createdAt: -1 });
+export const getAllProducts = async ({ page, limit, category, search }) => {
+  const filter = {};
 
-  return Promise.all(products.map(enrichProduct));
+  if (category) {
+    const categoryDoc = await Category.findOne({
+      name: { $regex: new RegExp(`^${category}$`, "i") },
+    });
+
+    if (categoryDoc) {
+      filter.categoryId = categoryDoc._id;
+    } else {
+      filter.categoryId = null;
+    }
+  }
+
+  if (search) {
+    filter.name = { $regex: search, $options: "i" };
+  }
+
+  const skip = (page - 1) * limit;
+
+  const [products, total] = await Promise.all([
+    Product.find(filter)
+      .populate("categoryId", "name")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
+
+    Product.countDocuments(filter),
+  ]);
+
+  const enriched = await Promise.all(products.map(enrichProduct));
+
+  return {
+    products: enriched,
+    pagination: {
+      page,
+      limit,
+      total,
+      pages: Math.ceil(total / limit),
+    },
+  };
 };
 
 export const getProductById = async (id) => {

@@ -8,9 +8,16 @@ import {
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const getProducts = asyncHandler(async (req, res) => {
-  const products = await getAllProducts();
+  const { page = 1, limit = 10, category, search } = req.query;
 
-  return res.json({ products });
+  const result = await getAllProducts({
+    page: Number(page),
+    limit: Number(limit),
+    category,
+    search,
+  });
+
+  return res.json(result);
 });
 
 export const getFeaturedProducts = asyncHandler(async (req, res) => {

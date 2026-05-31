@@ -11,3 +11,16 @@ export async function getPopularProducts() {
 
   return response.data.products;
 }
+
+export async function getProducts({ page, limit, category, search }) {
+  const response = await api.get("/products", {
+    params: {
+      page,
+      limit,
+      category: category === "All" ? "" : category,
+      search,
+    },
+  });
+
+  return response.data;
+}
