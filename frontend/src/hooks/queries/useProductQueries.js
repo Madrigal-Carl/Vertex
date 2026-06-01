@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   getFeaturedProducts,
   getPopularProducts,
+  getProductById,
   getProducts,
 } from "@/services/product.service";
 
@@ -17,6 +18,14 @@ export const usePopularProducts = () => {
   return useQuery({
     queryKey: ["popular-products"],
     queryFn: getPopularProducts,
+  });
+};
+
+export const useProduct = (id) => {
+  return useQuery({
+    queryKey: ["product", id],
+    queryFn: () => getProductById(id),
+    enabled: !!id,
   });
 };
 

@@ -12,6 +12,12 @@ export async function getPopularProducts() {
   return response.data.products;
 }
 
+export async function getProductById(id) {
+  const response = await api.get(`/products/${id}`);
+
+  return response.data.product;
+}
+
 export async function getProducts({ page, limit, category, search }) {
   const response = await api.get("/products", {
     params: {

@@ -79,16 +79,17 @@ export default function ProductCard({ product }) {
       className="bg-card border border-border flex flex-col group transition-shadow hover:shadow-md"
       style={{ borderRadius: "8px", overflow: "hidden" }}
     >
-      <div
-        className="relative h-44 flex items-center justify-center bg-cover bg-center"
-        style={{
-          backgroundImage: `url(${
+      <div className="relative h-44 overflow-hidden">
+        <img
+          src={
             product.images?.find((img) => img.isPrimary)?.url ||
             product.images?.[0]?.url ||
             ""
-          })`,
-        }}
-      >
+          }
+          alt={product.name}
+          className="w-full h-full object-cover"
+        />
+
         {product.discount > 0 && (
           <span
             className="absolute top-3 left-3 bg-[#E63946] text-white text-xs font-display tracking-widest px-2 py-1 uppercase"
@@ -110,7 +111,7 @@ export default function ProductCard({ product }) {
           rating={product.averageRating}
           reviewCount={product.reviewCount}
         />
-        <p className="text-xs text-[#5E7386] font-sans leading-relaxed flex-1">
+        <p className="text-xs text-[#5E7386] font-sans leading-relaxed flex-1 truncate">
           {product.description}
         </p>
         <div className="flex items-baseline gap-2 mt-1">

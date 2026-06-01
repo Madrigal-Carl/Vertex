@@ -1,40 +1,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-const defaultItems = [
-  {
-    id: "p3",
-    name: "Vertex Nova 5G",
-    price: 24999,
-    quantity: 1,
-    color: "Midnight Blue",
-    size: "128GB",
-    imageColor: "from-indigo-800 to-slate-800",
-  },
-  {
-    id: "p8",
-    name: "BassCore Earbuds",
-    price: 1999,
-    quantity: 1,
-    color: "Black",
-    size: undefined,
-    imageColor: "from-zinc-800 to-black",
-  },
-  {
-    id: "p6",
-    name: "USB-C Hub",
-    price: 1299,
-    quantity: 1,
-    color: undefined,
-    size: undefined,
-    imageColor: "from-gray-700 to-gray-900",
-  },
-];
-
 export const useCartStore = create(
   persist(
     (set, get) => ({
-      items: defaultItems,
       drawerOpen: false,
 
       openDrawer: () => set({ drawerOpen: true }),

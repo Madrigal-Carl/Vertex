@@ -109,20 +109,25 @@ export const getProductById = async (id) => {
     throw new Error("Product not found");
   }
 
-  const reviews = await Review.find({
-    targetType: "product",
-    targetId: product._id,
-  })
-    .populate("userId", "fullname")
-    .sort({ createdAt: -1 });
+  const [reviews, stats, variants] = await Promise.all([
+    Review.find({
+      targetType: "product",
+      targetId: product._id,
+    })
+      .populate("userId", "fullname")
+      .sort({ createdAt: -1 }),
 
-  const stats = await getRatingStats(product._id);
+    getRatingStats(product._id),
+
+    Variant.findByProductWithStock(product._id),
+  ]);
 
   return {
     ...product.toObject(),
-    reviews,
+    variants,
     averageRating: Number(stats.averageRating?.toFixed(1) || 0),
     reviewCount: stats.reviewCount || 0,
+    reviews,
   };
 };
 
