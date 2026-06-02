@@ -82,70 +82,96 @@ export default function CartDrawer() {
               </p>
             </div>
           ) : (
-            items.map((item) => (
-              <div
-                key={`${item.id}-${item.color}-${item.size}`}
-                data-testid={`cart-item-${item.id}`}
-                className="flex gap-4 py-4 border-b border-border last:border-0"
-              >
+            items.map((item) => {
+              const attributes = item.attributes || {};
+
+              return (
                 <div
-                  className={`w-16 h-16 flex-shrink-0 bg-gradient-to-br ${item.imageColor} flex items-center justify-center`}
-                  style={{ borderRadius: "4px" }}
+                  key={`${item.id}-${JSON.stringify(attributes)}`}
+                  data-testid={`cart-item-${item.id}`}
+                  className="flex gap-4 py-4 border-b border-border last:border-0"
                 >
-                  <span className="text-white/40 text-xs font-display">
-                    IMG
-                  </span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-display text-[#0F2436] text-sm truncate">
-                    {item.name}
-                  </p>
-                  {(item.color || item.size) && (
-                    <p className="text-xs text-[#5E7386] mt-0.5">
-                      {[item.color, item.size].filter(Boolean).join(" · ")}
-                    </p>
-                  )}
-                  <p className="font-display font-bold text-[#0F2436] text-sm mt-1">
-                    {formatPrice(item.price * item.quantity)}
-                  </p>
-                  <div className="flex items-center gap-3 mt-2">
-                    <div
-                      className="flex items-center border border-border"
-                      style={{ borderRadius: "2px" }}
-                    >
-                      <button
-                        data-testid={`btn-minus-${item.id}`}
-                        onClick={() =>
-                          updateQuantity(item.id, item.color, item.size, -1)
-                        }
-                        className="w-7 h-7 flex items-center justify-center hover:bg-[#F0F5FA] transition-colors text-[#0F2436]"
-                      >
-                        <Minus size={12} />
-                      </button>
-                      <span className="w-8 text-center text-sm font-display text-[#0F2436]">
-                        {item.quantity}
+                  {/* IMAGE */}
+                  <div
+                    className="w-16 h-16 flex-shrink-0 bg-[#F0F5FA] flex items-center justify-center"
+                    style={{ borderRadius: "4px" }}
+                  >
+                    {item.image ? (
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-full h-full object-cover"
+                        style={{ borderRadius: "4px" }}
+                      />
+                    ) : (
+                      <span className="text-[#5E7386] text-xs font-display">
+                        IMG
                       </span>
-                      <button
-                        data-testid={`btn-plus-${item.id}`}
-                        onClick={() =>
-                          updateQuantity(item.id, item.color, item.size, 1)
-                        }
-                        className="w-7 h-7 flex items-center justify-center hover:bg-[#F0F5FA] transition-colors text-[#0F2436]"
+                    )}
+                  </div>
+
+                  {/* DETAILS */}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-display text-[#0F2436] text-sm truncate">
+                      {item.name}
+                    </p>
+
+                    <p className="text-xs text-[#5E7386] mt-0.5">
+                      {Object.entries(attributes)
+                        .map(([_, value]) => value)
+                        .join(" · ")}
+                      {item.stock != null && (
+                        <span> · Stock: {item.stock}</span>
+                      )}
+                    </p>
+
+                    {/* PRICE */}
+                    <p className="font-display font-bold text-[#0F2436] text-sm mt-1">
+                      {formatPrice(item.price * item.quantity)}
+                    </p>
+
+                    {/* CONTROLS */}
+                    <div className="flex items-center gap-3 mt-2">
+                      <div
+                        className="flex items-center border border-border"
+                        style={{ borderRadius: "2px" }}
                       >
-                        <Plus size={12} />
+                        <button
+                          onClick={() =>
+                            updateQuantity(item.id, item.attributes, -1)
+                          }
+                          className="w-7 h-7 flex items-center justify-center hover:bg-[#F0F5FA]"
+                        >
+                          <Minus size={12} />
+                        </button>
+
+                        <span className="w-8 text-center text-sm font-display text-[#0F2436]">
+                          {item.quantity}
+                        </span>
+
+                        <button
+                          onClick={() => {
+                            if (item.quantity >= item.stock) return;
+                            updateQuantity(item.id, item.attributes, 1);
+                          }}
+                          disabled={item.quantity >= item.stock}
+                          className="w-7 h-7 flex items-center justify-center hover:bg-[#F0F5FA] disabled:opacity-40"
+                        >
+                          <Plus size={12} />
+                        </button>
+                      </div>
+
+                      <button
+                        onClick={() => removeItem(item.id, item.attributes)}
+                        className="text-[#5E7386] hover:text-[#E63946]"
+                      >
+                        <Trash2 size={14} />
                       </button>
                     </div>
-                    <button
-                      data-testid={`btn-remove-${item.id}`}
-                      onClick={() => removeItem(item.id, item.color, item.size)}
-                      className="text-[#5E7386] hover:text-[#E63946] transition-colors"
-                    >
-                      <Trash2 size={14} />
-                    </button>
                   </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 

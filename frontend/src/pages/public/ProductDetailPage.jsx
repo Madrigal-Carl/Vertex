@@ -124,6 +124,26 @@ export default function ProductDetailPage() {
     });
   }
 
+  const handleAddToCart = () => {
+    if (!selectedVariant) return;
+
+    const availableStock = selectedVariant.stock ?? 0;
+    if (availableStock <= 0) return;
+    const safeQuantity = Math.min(quantity, availableStock);
+
+    addItem({
+      id: selectedVariant.id,
+      name: product.name,
+      price: selectedVariant.price * (1 - (product?.discount || 0) / 100),
+      quantity: safeQuantity,
+      image: product.images?.find((img) => img.isPrimary)?.url,
+      attributes: selectedAttributes,
+      stock: availableStock,
+    });
+
+    openDrawer();
+  };
+
   return (
     <div className="min-h-screen bg-[#F0F5FA]">
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-8">
@@ -291,10 +311,13 @@ export default function ProductDetailPage() {
             </div>
 
             <button
+              onClick={handleAddToCart}
               disabled={!selectedVariant || selectedVariant.stock === 0}
               className="w-full py-4 bg-[#E63946] text-white font-display tracking-widest text-sm uppercase hover:bg-[#cc2f3b] transition-colors active:scale-95 flex items-center justify-center gap-3 disabled:opacity-40"
             >
-              Add to Cart
+              {!selectedVariant || selectedVariant.stock <= 0
+                ? "Out of Stock"
+                : "Add to Cart"}
             </button>
           </div>
         </div>

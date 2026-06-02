@@ -13,7 +13,7 @@ export const useCart = () => {
   const removeItem = useCartStore((state) => state.removeItem);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
 
-  // computed values (kept OUT of store)
+  // ================= COMPUTED VALUES =================
   const totalPrice = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0,
