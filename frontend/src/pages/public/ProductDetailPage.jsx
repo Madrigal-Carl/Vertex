@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { ChevronLeft, Plus, Minus, ShoppingCart } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
@@ -9,19 +9,33 @@ import StarRating from "@/components/public/StarRating";
 import ProductCard from "@/components/public/ProductCard";
 import { useCart } from "@/hooks/useCart";
 
-const COLORS = ["Midnight Blue", "Silver", "Matte Black"];
-const SIZES = ["64GB", "128GB", "256GB"];
+export function buildVariantAttributes(variants = []) {
+  const attributeMap = {};
 
-function formatPrice(p) {
-  return `₱${p.toLocaleString()}`;
-}
+  variants.forEach((variant) => {
+    Object.entries(variant.attributes || {}).forEach(([key, value]) => {
+      if (!attributeMap[key]) {
+        attributeMap[key] = new Set();
+      }
 
-function formatDate(date) {
-  return new Date(date).toLocaleDateString("en-PH", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+      attributeMap[key].add(value);
+    });
   });
+
+  return {
+    attributes: Object.entries(attributeMap).map(([name, values]) => ({
+      name,
+      values: [...values],
+    })),
+
+    variants: variants.map((variant) => ({
+      id: variant._id,
+      sku: variant.sku,
+      price: variant.price,
+      stock: variant.stock,
+      attributes: variant.attributes,
+    })),
+  };
 }
 
 export default function ProductDetailPage() {
@@ -31,34 +45,90 @@ export default function ProductDetailPage() {
   const { data: product, isLoading, error } = useProduct(id);
   const { data: popularProducts, isLoading: popularLoading } =
     usePopularProducts();
+  const variantData = buildVariantAttributes(product?.variants);
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [reviewRating, setReviewRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
+  const [selectedAttributes, setSelectedAttributes] = useState({});
 
-  const [selectedColor, setSelectedColor] = useState(COLORS[0]);
-  const [selectedSize, setSelectedSize] = useState(SIZES[1]);
   const [quantity, setQuantity] = useState(1);
   const { addItem, openDrawer } = useCart();
 
-  function handleAddToCart() {
-    addItem({
-      id: "p3",
-      name: "Vertex Nova 5G",
-      price: 24999,
-      quantity,
-      color: selectedColor,
-      size: selectedSize,
-      imageColor: "from-indigo-800 to-slate-800",
+  const selectedVariant = useMemo(() => {
+    const totalAttributes = variantData.attributes.length;
+
+    if (Object.keys(selectedAttributes).length !== totalAttributes) {
+      return null;
+    }
+
+    return (
+      variantData.variants.find((variant) =>
+        Object.entries(selectedAttributes).every(
+          ([key, value]) => variant.attributes[key] === value,
+        ),
+      ) || null
+    );
+  }, [selectedAttributes, variantData.variants, variantData.attributes.length]);
+
+  const isValueAvailable = (attributeName, value) => {
+    const nextSelection = {
+      ...selectedAttributes,
+      [attributeName]: value,
+    };
+
+    return variantData.variants.some((variant) =>
+      Object.entries(nextSelection).every(
+        ([key, selectedValue]) => variant.attributes[key] === selectedValue,
+      ),
+    );
+  };
+
+  const minVariantPrice = useMemo(() => {
+    if (!variantData.variants.length) return 0;
+
+    return Math.min(...variantData.variants.map((variant) => variant.price));
+  }, [variantData.variants]);
+
+  const displayPrice = selectedVariant?.price ?? minVariantPrice;
+
+  const handleAttributeChange = (attributeName, value) => {
+    setSelectedAttributes((prev) => ({
+      ...prev,
+      [attributeName]: value,
+    }));
+  };
+
+  useEffect(() => {
+    if (!variantData.variants.length) return;
+
+    const firstVariant =
+      variantData.variants.find((v) => v.stock > 0) || variantData.variants[0];
+
+    setSelectedAttributes(firstVariant.attributes);
+  }, [product?._id]);
+
+  useEffect(() => {
+    setQuantity(1);
+  }, [selectedVariant?.id]);
+
+  function formatPrice(p) {
+    return `${p.toLocaleString()}`;
+  }
+
+  function formatDate(date) {
+    return new Date(date).toLocaleDateString("en-PH", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
-    openDrawer();
   }
 
   return (
     <div className="min-h-screen bg-[#F0F5FA]">
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-8">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/products")}
           className="flex items-center gap-2 text-[#5E7386] hover:text-[#0F2436] transition-colors font-display tracking-widest text-xs uppercase mb-8"
         >
           <ChevronLeft size={16} />
@@ -84,7 +154,6 @@ export default function ProductDetailPage() {
               {product?.images?.map((image, index) => (
                 <button
                   key={index}
-                  data-testid={`btn-thumb-${index}`}
                   onClick={() => setSelectedImage(index)}
                   className={`h-20 overflow-hidden border transition-all ${
                     selectedImage === index
@@ -120,64 +189,71 @@ export default function ProductDetailPage() {
 
             <div className="flex items-baseline gap-3 mb-6">
               <span className="text-3xl font-display font-bold text-[#0F2436]">
-                {formatPrice(24999)}
+                ₱
+                {formatPrice(
+                  displayPrice * (1 - (product?.discount || 0) / 100),
+                )}
               </span>
               <span className="text-lg text-[#5E7386] line-through font-sans">
-                {formatPrice(28999)}
+                ₱
+                {formatPrice(
+                  selectedVariant?.price || formatPrice(displayPrice),
+                )}
               </span>
-              <span
-                className="text-xs font-display tracking-widest bg-[#E63946] text-white px-2 py-1 uppercase"
-                style={{ borderRadius: "2px" }}
-              >
-                -14%
-              </span>
+              {product?.discount > 0 && (
+                <span
+                  className="text-xs font-display tracking-widest bg-[#E63946] text-white px-2 py-1 uppercase"
+                  style={{ borderRadius: "2px" }}
+                >
+                  -{product?.discount}%
+                </span>
+              )}
             </div>
 
             <p className="text-[#5E7386] text-sm font-sans leading-relaxed mb-6">
               {product?.description}
             </p>
 
-            {/* Color */}
-            <div className="mb-5">
-              <p className="font-display tracking-widest text-xs text-[#0F2436] uppercase mb-3">
-                Color — <span className="text-[#5E7386]">{selectedColor}</span>
-              </p>
-              <div className="flex gap-2">
-                {COLORS.map((c) => (
-                  <button
-                    key={c}
-                    data-testid={`btn-color-${c.toLowerCase().replace(/\s/g, "-")}`}
-                    onClick={() => setSelectedColor(c)}
-                    className={`px-3 py-2 text-xs font-sans border transition-all ${selectedColor === c ? "bg-[#0F2436] text-white border-[#0F2436]" : "border-[#0F2436]/30 text-[#5E7386] hover:border-[#0F2436]"}`}
-                    style={{ borderRadius: "2px" }}
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
-            </div>
+            {/* Variants */}
+            {variantData.attributes.map((attribute) => (
+              <div key={attribute.name} className="mb-5">
+                <p className="font-display tracking-widest text-xs text-[#0F2436] uppercase mb-3">
+                  {attribute.name} —{" "}
+                  <span className="text-[#5E7386]">
+                    {selectedAttributes[attribute.name] || "Select"}
+                  </span>
+                </p>
 
-            {/* Size */}
-            <div className="mb-6">
-              <p className="font-display tracking-widest text-xs text-[#0F2436] uppercase mb-3">
-                Storage — <span className="text-[#5E7386]">{selectedSize}</span>
-              </p>
-              <div className="flex gap-2">
-                {SIZES.map((s) => (
-                  <button
-                    key={s}
-                    data-testid={`btn-size-${s}`}
-                    onClick={() => setSelectedSize(s)}
-                    className={`px-4 py-2 text-xs font-display border transition-all ${selectedSize === s ? "bg-[#0F2436] text-white border-[#0F2436]" : "border-[#0F2436]/30 text-[#5E7386] hover:border-[#0F2436]"}`}
-                    style={{ borderRadius: "2px" }}
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
-            </div>
+                <div className="flex flex-wrap gap-2">
+                  {attribute.values.map((value) => {
+                    const isSelected =
+                      selectedAttributes[attribute.name] === value;
 
-            <p className="text-sm text-[#5E7386] mb-6">24 items available</p>
+                    return (
+                      <button
+                        key={value}
+                        onClick={() =>
+                          handleAttributeChange(attribute.name, value)
+                        }
+                        className={`px-3 py-2 text-xs font-sans border transition-all
+                        ${
+                          isSelected
+                            ? "bg-[#0F2436] text-white border-[#0F2436]"
+                            : "border-[#0F2436]/30 text-[#5E7386] hover:border-[#0F2436]"
+                        }`}
+                        style={{ borderRadius: "2px" }}
+                      >
+                        {value}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+
+            <p className="text-sm text-[#5E7386] mb-6">
+              {selectedVariant?.stock ?? 0} items available
+            </p>
 
             {/* Quantity */}
             <div className="flex items-center gap-4 mb-8">
@@ -189,8 +265,8 @@ export default function ProductDetailPage() {
                 style={{ borderRadius: "4px" }}
               >
                 <button
-                  data-testid="btn-qty-minus"
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  disabled={quantity <= 1}
                   className="w-10 h-10 flex items-center justify-center hover:bg-[#F0F5FA] transition-colors"
                 >
                   <Minus size={14} className="text-[#0F2436]" />
@@ -199,8 +275,14 @@ export default function ProductDetailPage() {
                   {quantity}
                 </span>
                 <button
-                  data-testid="btn-qty-plus"
-                  onClick={() => setQuantity((q) => q + 1)}
+                  onClick={() =>
+                    setQuantity((q) =>
+                      Math.min(selectedVariant?.stock || 1, q + 1),
+                    )
+                  }
+                  disabled={
+                    !selectedVariant || quantity >= selectedVariant.stock
+                  }
                   className="w-10 h-10 flex items-center justify-center hover:bg-[#F0F5FA] transition-colors"
                 >
                   <Plus size={14} className="text-[#0F2436]" />
@@ -209,12 +291,9 @@ export default function ProductDetailPage() {
             </div>
 
             <button
-              data-testid="btn-add-to-cart"
-              onClick={handleAddToCart}
-              className="w-full py-4 bg-[#E63946] text-white font-display tracking-widest text-sm uppercase hover:bg-[#cc2f3b] transition-colors active:scale-95 flex items-center justify-center gap-3"
-              style={{ borderRadius: "4px" }}
+              disabled={!selectedVariant || selectedVariant.stock === 0}
+              className="w-full py-4 bg-[#E63946] text-white font-display tracking-widest text-sm uppercase hover:bg-[#cc2f3b] transition-colors active:scale-95 flex items-center justify-center gap-3 disabled:opacity-40"
             >
-              <ShoppingCart size={18} />
               Add to Cart
             </button>
           </div>
@@ -258,7 +337,6 @@ export default function ProductDetailPage() {
                   Your Review
                 </label>
                 <textarea
-                  data-testid="input-product-review"
                   value={reviewText}
                   onChange={(e) => setReviewText(e.target.value)}
                   placeholder="Share your experience with this product..."
@@ -268,7 +346,6 @@ export default function ProductDetailPage() {
                 />
               </div>
               <button
-                data-testid="btn-submit-product-review"
                 type="submit"
                 disabled={!reviewRating || !reviewText.trim()}
                 className="px-8 py-3 bg-[#E63946] text-white font-display tracking-widest text-xs uppercase hover:bg-[#cc2f3b] transition-colors disabled:opacity-40"

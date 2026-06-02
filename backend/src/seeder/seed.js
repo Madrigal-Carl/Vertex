@@ -13,27 +13,56 @@ import Review from "../models/review.model.js";
 
 const MONGO_URI = process.env.MONGO_URI;
 
-const CATEGORIES = ["Laptops", "Phones", "Tablets", "Accessories", "Audio"];
+const CATEGORIES = [
+  "Laptops",
+  "Phones",
+  "Tablets",
+  "Accessories",
+  "Audio",
+  "Gaming",
+];
 const PRODUCTS = {
   Laptops: [
     "MacBook Air M3",
     "Dell XPS 13",
     "Lenovo ThinkPad X1",
     "ASUS ROG Zephyrus",
+    "HP Spectre x360",
   ],
   Phones: [
     "iPhone 16 Pro",
     "Samsung Galaxy S26",
     "Google Pixel 11",
     "Nothing Phone 4",
+    "OnePlus 14",
   ],
-  Tablets: ["iPad Air", "Samsung Galaxy Tab S11", "Xiaomi Pad 8"],
-  Accessories: ["USB-C Hub", "Wireless Charger", "Laptop Stand", "Power Bank"],
+  Tablets: [
+    "iPad Air",
+    "Samsung Galaxy Tab S11",
+    "Xiaomi Pad 8",
+    "OnePlus Pad 3",
+    "Lenovo Tab Extreme",
+  ],
+  Accessories: [
+    "USB-C Hub",
+    "Wireless Charger",
+    "Laptop Stand",
+    "Power Bank",
+    "Mechanical Keyboard",
+  ],
   Audio: [
     "AirPods Pro",
     "Sony WH-1000XM6",
     "JBL Charge 7",
     "Soundcore Liberty 5",
+    "Bose QuietComfort Ultra",
+  ],
+  Gaming: [
+    "PlayStation 5",
+    "Xbox Series X",
+    "Nintendo Switch OLED",
+    "Steam Deck OLED",
+    "ASUS ROG Ally",
   ],
 };
 
@@ -90,7 +119,7 @@ async function seed() {
       for (const productName of productNames) {
         const imageCount = faker.number.int({
           min: 3,
-          max: 5,
+          max: 4,
         });
 
         const product = await Product.create({
@@ -188,6 +217,34 @@ async function seed() {
                 size: "Large",
               },
               price: 2000,
+            },
+          ];
+        }
+
+        // ================= GAMING =================
+
+        if (category.name === "Gaming") {
+          variantDefinitions = [
+            {
+              attributes: {
+                color: "Black",
+                edition: "Standard",
+              },
+              price: 25000,
+            },
+            {
+              attributes: {
+                color: "Black",
+                edition: "Bundle",
+              },
+              price: 30000,
+            },
+            {
+              attributes: {
+                color: "White",
+                edition: "Limited",
+              },
+              price: 35000,
             },
           ];
         }
