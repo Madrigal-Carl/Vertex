@@ -11,6 +11,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
 import useProtectedAction from "@/hooks/useProtectedAction";
+import ProductCardSkeleton from "@/components/ui/ProductCardSkeleton";
 import {
   X,
   Star,
@@ -166,11 +167,11 @@ export default function Home() {
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {featuredLoading ? (
-              <p>Loading featured products...</p>
-            ) : (
-              deals.map((p) => <ProductCard key={p._id} product={p} />)
-            )}
+            {featuredLoading
+              ? Array.from({ length: 4 }).map((_, index) => (
+                  <ProductCardSkeleton key={index} />
+                ))
+              : deals.map((p) => <ProductCard key={p._id} product={p} />)}
           </div>
           <div className="text-center">
             <Link to="/products">
@@ -199,11 +200,11 @@ export default function Home() {
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {popularLoading ? (
-              <p>Loading popular products...</p>
-            ) : (
-              popular.map((p) => <ProductCard key={p._id} product={p} />)
-            )}
+            {popularLoading
+              ? Array.from({ length: 4 }).map((_, index) => (
+                  <ProductCardSkeleton key={index} />
+                ))
+              : popular.map((p) => <ProductCard key={p._id} product={p} />)}
           </div>
           <div className="text-center">
             <Link to="/products">
