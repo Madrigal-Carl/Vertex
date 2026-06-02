@@ -125,10 +125,8 @@ async function seed() {
         const product = await Product.create({
           categoryId: category._id,
           name: productName,
-          description: faker.commerce.productDescription(),
-
+          description: faker.lorem.paragraph(),
           discount: faker.helpers.arrayElement([0, 5, 10, 15, 20]),
-
           images: Array.from({ length: imageCount }).map((_, index) => ({
             url: faker.image.urlPicsumPhotos({
               width: 600,
