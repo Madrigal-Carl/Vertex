@@ -44,6 +44,22 @@ export default function CheckoutPage() {
       .padStart(4, "0"),
   )[0];
 
+  if (items.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold">Your cart is empty</h2>
+          <a
+            href="/products"
+            className="inline-block mt-4 px-6 py-3 bg-[#E63946] text-white rounded"
+          >
+            Continue Shopping
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   if (placed) {
     return (
       <div className="min-h-screen bg-[#F0F5FA] flex items-center justify-center px-6">
@@ -110,15 +126,15 @@ export default function CheckoutPage() {
               <div className="px-6 py-5 space-y-4">
                 {items.map((item) => (
                   <div
-                    key={`${item.id}-${item.color}-${item.size}`}
+                    key={`${item.id}-${JSON.stringify(item.attributes)}`}
                     className="flex items-center gap-4 pb-4 border-b border-[#F0F5FA] last:border-0 last:pb-0"
                   >
-                    <div
-                      className={`w-16 h-16 rounded-lg bg-gradient-to-br ${CATEGORY_COLORS[item.category] || "from-slate-700 to-slate-900"} flex items-center justify-center flex-shrink-0`}
-                    >
-                      <span className="text-white/60 font-display text-xs font-bold">
-                        {item.category?.slice(0, 3).toUpperCase()}
-                      </span>
+                    <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-display font-semibold text-[#0F2436] text-sm">
@@ -126,8 +142,10 @@ export default function CheckoutPage() {
                       </p>
                       <p className="text-xs text-[#5E7386] mt-0.5">
                         Qty: {item.quantity}
-                        {item.color ? ` · ${item.color}` : ""}
-                        {item.size ? ` · ${item.size}` : ""}
+                        {item.attributes &&
+                          Object.entries(item.attributes).map(
+                            ([key, value]) => <span key={key}> · {value}</span>,
+                          )}
                       </p>
                       <p className="text-xs text-[#5E7386]">
                         {formatPrice(item.price)} each
@@ -318,7 +336,6 @@ export default function CheckoutPage() {
 
             {/* Place Order */}
             <button
-              data-testid="btn-place-order"
               onClick={() => setPlaced(true)}
               className="w-full py-4 bg-[#E63946] text-white font-display tracking-widest text-sm uppercase hover:bg-[#cc2f3b] transition-colors active:scale-95"
               style={{ borderRadius: "6px" }}

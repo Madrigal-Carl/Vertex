@@ -132,7 +132,8 @@ export default function ProductDetailPage() {
     const safeQuantity = Math.min(quantity, availableStock);
 
     addItem({
-      id: selectedVariant.id,
+      productId: product._id,
+      variantId: selectedVariant.id,
       name: product.name,
       price: selectedVariant.price * (1 - (product?.discount || 0) / 100),
       quantity: safeQuantity,

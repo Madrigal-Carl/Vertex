@@ -2,7 +2,11 @@ import { Navigate, Outlet } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
 
 export default function ProtectedRoute({ allowedRoles }) {
-  const { isAuthenticated, role } = useAuth();
+  const { isAuthenticated, role, loading } = useAuth();
+
+  if (loading) {
+    return null;
+  }
 
   // Not logged in
   if (!isAuthenticated) {

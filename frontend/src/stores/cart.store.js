@@ -22,7 +22,7 @@ export const useCartStore = create(
       addItem: (item) => {
         set((state) => {
           const existing = state.items.find(
-            (i) => i.id === item.id && isSameVariant(i, item),
+            (i) => i.variantId === item.variantId && isSameVariant(i, item),
           );
 
           if (existing) {
@@ -30,7 +30,7 @@ export const useCartStore = create(
 
             return {
               items: state.items.map((i) =>
-                i.id === item.id && isSameVariant(i, item)
+                i.variantId === item.variantId && isSameVariant(i, item)
                   ? {
                       ...i,
                       quantity: Math.min(i.quantity + item.quantity, maxStock),
@@ -54,19 +54,20 @@ export const useCartStore = create(
       },
 
       // ================= REMOVE ITEM =================
-      removeItem: (id, attributes) => {
+      removeItem: (variantId, attributes) => {
         set((state) => ({
           items: state.items.filter(
-            (i) => !(i.id === id && isSameVariant(i, { attributes })),
+            (i) =>
+              !(i.variantId === variantId && isSameVariant(i, { attributes })),
           ),
         }));
       },
 
       // ================= UPDATE QUANTITY =================
-      updateQuantity: (id, attributes, delta) => {
+      updateQuantity: (variantId, attributes, delta) => {
         set((state) => ({
           items: state.items.map((i) => {
-            if (i.id === id && isSameVariant(i, { attributes })) {
+            if (i.variantId === variantId && isSameVariant(i, { attributes })) {
               const maxStock = i.stock ?? Infinity;
 
               const newQty = i.quantity + delta;

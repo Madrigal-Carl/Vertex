@@ -57,7 +57,6 @@ export default function CartDrawer() {
             </p>
           </div>
           <button
-            data-testid="btn-close-cart"
             onClick={closeDrawer}
             className="text-white/60 hover:text-white transition-colors"
           >
@@ -87,8 +86,7 @@ export default function CartDrawer() {
 
               return (
                 <div
-                  key={`${item.id}-${JSON.stringify(attributes)}`}
-                  data-testid={`cart-item-${item.id}`}
+                  key={`${item.price}-${item.variantId}-${JSON.stringify(attributes)}`}
                   className="flex gap-4 py-4 border-b border-border last:border-0"
                 >
                   {/* IMAGE */}
@@ -138,7 +136,7 @@ export default function CartDrawer() {
                       >
                         <button
                           onClick={() =>
-                            updateQuantity(item.id, item.attributes, -1)
+                            updateQuantity(item.variantId, item.attributes, -1)
                           }
                           className="w-7 h-7 flex items-center justify-center hover:bg-[#F0F5FA]"
                         >
@@ -152,7 +150,7 @@ export default function CartDrawer() {
                         <button
                           onClick={() => {
                             if (item.quantity >= item.stock) return;
-                            updateQuantity(item.id, item.attributes, 1);
+                            updateQuantity(item.variantId, item.attributes, 1);
                           }}
                           disabled={item.quantity >= item.stock}
                           className="w-7 h-7 flex items-center justify-center hover:bg-[#F0F5FA] disabled:opacity-40"
@@ -162,7 +160,9 @@ export default function CartDrawer() {
                       </div>
 
                       <button
-                        onClick={() => removeItem(item.id, item.attributes)}
+                        onClick={() =>
+                          removeItem(item.variantId, item.attributes)
+                        }
                         className="text-[#5E7386] hover:text-[#E63946]"
                       >
                         <Trash2 size={14} />
@@ -193,7 +193,6 @@ export default function CartDrawer() {
             </div>
             <Link to="/checkout" onClick={handleCheckout}>
               <button
-                data-testid="btn-checkout"
                 className="w-full py-3 bg-[#E63946] text-white font-display tracking-widest text-sm uppercase hover:bg-[#cc2f3b] transition-colors active:scale-95"
                 style={{ borderRadius: "4px" }}
               >
