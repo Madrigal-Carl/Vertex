@@ -12,6 +12,7 @@ export const useCart = () => {
   const addItem = useCartStore((state) => state.addItem);
   const removeItem = useCartStore((state) => state.removeItem);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
+  const clearCart = useCartStore((state) => state.clearCart);
 
   // ================= COMPUTED VALUES =================
   const totalPrice = items.reduce(
@@ -31,5 +32,6 @@ export const useCart = () => {
     addItem,
     removeItem,
     updateQuantity,
+    clearCart,
   };
 };

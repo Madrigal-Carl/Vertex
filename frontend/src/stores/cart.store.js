@@ -17,6 +17,7 @@ export const useCartStore = create(
 
       openDrawer: () => set({ drawerOpen: true }),
       closeDrawer: () => set({ drawerOpen: false }),
+      clearCart: () => set({ items: [] }),
 
       // ================= ADD ITEM =================
       addItem: (item) => {

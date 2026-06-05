@@ -8,19 +8,12 @@ import {
   CreditCard,
   Banknote,
 } from "lucide-react";
+import { createOrder } from "@/services/order.service";
 
 function formatPrice(p) {
   const value = Number(p ?? 0);
   return `₱${value.toLocaleString()}`;
 }
-
-const CATEGORY_COLORS = {
-  Laptops: "from-blue-800 to-slate-900",
-  Phones: "from-indigo-800 to-slate-800",
-  Tablets: "from-violet-800 to-slate-900",
-  Accessories: "from-teal-700 to-slate-800",
-  Audio: "from-purple-800 to-slate-900",
-};
 
 const SAVED_ADDRESS = {
   label: "Home",
@@ -32,18 +25,73 @@ const SAVED_ADDRESS = {
 };
 
 export default function CheckoutPage() {
-  const { items, totalPrice } = useCart();
+  const { items, totalPrice, clearCart } = useCart();
   const [delivery, setDelivery] = useState("pickup");
   const [payment, setPayment] = useState("cod");
-  const [placed, setPlaced] = useState(false);
-
-  console.log(items);
   const shipping = delivery === "delivery" ? 150 : 0;
-  const orderNum = useState(() =>
-    Math.floor(Math.random() * 10000)
-      .toString()
-      .padStart(4, "0"),
-  )[0];
+
+  const handlePlaceOrder = async () => {
+    try {
+      const payload = {
+        deliveryMethod: delivery,
+        paymentMethod: payment === "gcash" ? "e-wallet" : "cod",
+        items: items.map((item) => ({
+          productId: item.productId,
+          variantId: item.variantId,
+          quantity: item.quantity,
+        })),
+      };
+
+      await createOrder(payload);
+      clearCart();
+    } catch (err) {
+      console.error(err);
+
+      alert(
+        err?.response?.data?.message || err.message || "Failed to place order",
+      );
+    }
+  };
+
+  // if (placed) {
+  //   return (
+  //     <div className="min-h-screen bg-[#F0F5FA] flex items-center justify-center px-6">
+  //       <div className="text-center max-w-md">
+  //         <div
+  //           className="w-20 h-20 bg-[#0F2436] flex items-center justify-center mx-auto mb-6"
+  //           style={{ borderRadius: "50%" }}
+  //         >
+  //           <CheckCircle size={36} className="text-[#E63946]" />
+  //         </div>
+  //         <h2 className="text-3xl font-display font-bold text-[#0F2436] mb-3">
+  //           Order Placed!
+  //         </h2>
+  //         <p className="text-[#5E7386] font-sans mb-1">
+  //           Your order{" "}
+  //           <span className="text-[#0F2436] font-semibold">
+  //             {order?.orderNumber}
+  //           </span>{" "}
+  //           has been received.
+  //         </p>
+  //         <p className="text-[#5E7386] font-sans mb-8">
+  //           We'll notify you once it's{" "}
+  //           <span className="text-[#0F2436] font-semibold">
+  //             {delivery === "pickup" ? "ready for pickup" : "on its way"}
+  //           </span>
+  //           .
+  //         </p>
+  //         <a href="/">
+  //           <button
+  //             className="px-8 py-3 bg-[#E63946] text-white font-display tracking-widest text-sm uppercase hover:bg-[#cc2f3b] transition-colors"
+  //             style={{ borderRadius: "4px" }}
+  //           >
+  //             Back to Home
+  //           </button>
+  //         </a>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   if (items.length === 0) {
     return (
@@ -55,44 +103,6 @@ export default function CheckoutPage() {
             className="inline-block mt-4 px-6 py-3 bg-[#E63946] text-white rounded"
           >
             Continue Shopping
-          </a>
-        </div>
-      </div>
-    );
-  }
-
-  if (placed) {
-    return (
-      <div className="min-h-screen bg-[#F0F5FA] flex items-center justify-center px-6">
-        <div className="text-center max-w-md">
-          <div
-            className="w-20 h-20 bg-[#0F2436] flex items-center justify-center mx-auto mb-6"
-            style={{ borderRadius: "50%" }}
-          >
-            <CheckCircle size={36} className="text-[#E63946]" />
-          </div>
-          <h2 className="text-3xl font-display font-bold text-[#0F2436] mb-3">
-            Order Placed!
-          </h2>
-          <p className="text-[#5E7386] font-sans mb-1">
-            Your order{" "}
-            <span className="text-[#0F2436] font-semibold">#VX-{orderNum}</span>{" "}
-            has been received.
-          </p>
-          <p className="text-[#5E7386] font-sans mb-8">
-            We'll notify you once it's{" "}
-            <span className="text-[#0F2436] font-semibold">
-              {delivery === "pickup" ? "ready for pickup" : "on its way"}
-            </span>
-            .
-          </p>
-          <a href="/">
-            <button
-              className="px-8 py-3 bg-[#E63946] text-white font-display tracking-widest text-sm uppercase hover:bg-[#cc2f3b] transition-colors"
-              style={{ borderRadius: "4px" }}
-            >
-              Back to Home
-            </button>
           </a>
         </div>
       </div>
@@ -337,7 +347,7 @@ export default function CheckoutPage() {
 
             {/* Place Order */}
             <button
-              onClick={() => setPlaced(true)}
+              onClick={handlePlaceOrder}
               className="w-full py-4 bg-[#E63946] text-white font-display tracking-widest text-sm uppercase hover:bg-[#cc2f3b] transition-colors active:scale-95"
               style={{ borderRadius: "6px" }}
             >
