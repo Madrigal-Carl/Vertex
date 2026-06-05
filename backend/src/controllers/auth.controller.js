@@ -46,7 +46,6 @@ export const login = asyncHandler(async (req, res) => {
     message: "Login successful",
     user: {
       id: user._id,
-      fullname: user.fullname,
       email: user.email,
       role: user.role,
     },
@@ -82,6 +81,6 @@ export const logout = asyncHandler(async (req, res) => {
 
 export const getMe = asyncHandler(async (req, res) => {
   return res.json({
-    user: req.user,
+    user: req.user || null,
   });
 });

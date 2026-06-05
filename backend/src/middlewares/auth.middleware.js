@@ -12,7 +12,7 @@ export const protect = async (req, res, next) => {
       try {
         const decoded = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET);
 
-        const user = await User.findById(decoded.userId).select("-password");
+        const user = await User.findById(decoded.userId);
 
         if (!user) {
           return res.status(401).json({
@@ -39,7 +39,7 @@ export const protect = async (req, res, next) => {
 
     const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
 
-    const user = await User.findById(payload.userId).select("-password");
+    const user = await User.findById(payload.userId);
 
     if (!user) {
       return res.status(401).json({
@@ -67,26 +67,5 @@ export const protect = async (req, res, next) => {
     return res.status(401).json({
       message: "Session expired",
     });
-  }
-};
-
-export const optionalAuth = async (req, res, next) => {
-  try {
-    const token = req.cookies.accessToken;
-
-    if (!token) {
-      req.user = null;
-      return next();
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
-
-    const user = await User.findById(decoded.userId).select("-password");
-
-    req.user = user || null;
-    next();
-  } catch {
-    req.user = null;
-    next();
   }
 };

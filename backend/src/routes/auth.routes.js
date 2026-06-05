@@ -11,7 +11,7 @@ import {
   validateRegister,
   validateLogin,
 } from "../validators/auth.validator.js";
-import { optionalAuth } from "../middlewares/auth.middleware.js";
+import { protect } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
@@ -20,6 +20,6 @@ router.get("/verify-email/:token", verifyEmail);
 router.post("/login", validateLogin, login);
 router.post("/logout", logout);
 router.post("/google", googleAuth);
-router.get("/me", optionalAuth, getMe);
+router.get("/me", protect, getMe);
 
 export default router;

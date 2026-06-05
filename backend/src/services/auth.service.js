@@ -11,7 +11,7 @@ import {
   generateVerifyToken,
 } from "../utils/generateToken.js";
 
-export const registerUser = async ({ fullname, email, password }) => {
+export const registerUser = async ({ email, password }) => {
   const existingUser = await User.findOne({ email });
 
   if (existingUser) {
@@ -21,7 +21,6 @@ export const registerUser = async ({ fullname, email, password }) => {
   const hashedPassword = await bcrypt.hash(password, 12);
 
   const user = await User.create({
-    fullname,
     email,
     password: hashedPassword,
   });
@@ -34,7 +33,6 @@ export const registerUser = async ({ fullname, email, password }) => {
     type: EMAIL_JOBS.VERIFY_EMAIL,
     data: {
       to: user.email,
-      fullname: user.fullname,
       verifyUrl,
     },
   });
@@ -65,10 +63,10 @@ export const verifyUserEmail = async (token) => {
 };
 
 export const loginUser = async ({ email, password }) => {
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
-    throw new Error("Invalid credentials");
+    throw new Error("Email is not registered");
   }
 
   // GOOGLE ACCOUNT
@@ -79,7 +77,7 @@ export const loginUser = async ({ email, password }) => {
   const isPasswordValid = await bcrypt.compare(password, user.password);
 
   if (!isPasswordValid) {
-    throw new Error("Invalid credentials");
+    throw new Error("Password is incorrect");
   }
 
   if (!user.isVerified) {
@@ -121,7 +119,6 @@ export const googleAuthUser = async (token) => {
       fullname: name,
       email,
       googleId,
-      provider: "google",
       isVerified: true,
     });
   }

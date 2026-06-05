@@ -18,7 +18,6 @@ export default function AuthPage() {
   });
 
   const [registerForm, setRegisterForm] = useState({
-    fullname: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -57,7 +56,7 @@ export default function AuthPage() {
 
     setError("");
 
-    const { fullname, email, password, confirmPassword } = registerForm;
+    const { email, password, confirmPassword } = registerForm;
 
     if (password !== confirmPassword) {
       setError("Passwords do not match");
@@ -67,7 +66,6 @@ export default function AuthPage() {
 
     try {
       const response = await register({
-        fullname,
         email,
         password,
       });
