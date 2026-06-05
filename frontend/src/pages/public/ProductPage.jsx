@@ -25,18 +25,20 @@ export default function Products() {
       setSearchParams((prev) => {
         const params = Object.fromEntries(prev);
 
-        const updated = {
+        const searchChanged = input !== search;
+
+        const updated = cleanParams({
           ...params,
           search: input,
-          page: 1,
-        };
+          page: searchChanged ? 1 : params.page,
+        });
 
-        return cleanParams(updated);
+        return updated;
       });
     }, 400);
 
     return () => clearTimeout(t);
-  }, [input]);
+  }, [input, search, setSearchParams]);
 
   const { data } = useProducts({
     page,
