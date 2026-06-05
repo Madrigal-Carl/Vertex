@@ -158,7 +158,7 @@ export default function HistoryPage() {
       </div>
 
       <div className="max-w-3xl mx-auto px-6 md:px-12 py-8">
-        <div className="flex border-b border-[#0F2436]/20 mb-6">
+        <div className="flex border-b border-[#0F2436]/20 mb-6 ">
           {[
             { id: "orders", label: "Orders", icon: ShoppingBag },
             { id: "services", label: "Services", icon: Wrench },
@@ -166,9 +166,10 @@ export default function HistoryPage() {
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`flex items-center gap-2 px-6 py-3 font-display tracking-widest text-xs uppercase border-b-2 transition-colors ${tab === t.id ? "border-[#E63946] text-[#E63946]" : "border-transparent text-[#5E7386] hover:text-[#0F2436]"}`}
+              className={`w-full flex items-center justify-center gap-2 px-6 py-3 font-display tracking-widest text-sm uppercase border-b-2 transition-colors ${tab === t.id ? "border-[#E63946] text-[#E63946]" : "border-transparent text-[#5E7386] hover:text-[#0F2436]"}`}
             >
-              <t.icon size={14} /> {t.label}
+              <t.icon size={14} />
+              <p>{t.label}</p>
             </button>
           ))}
         </div>
