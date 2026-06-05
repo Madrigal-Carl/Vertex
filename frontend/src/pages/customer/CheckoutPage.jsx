@@ -37,6 +37,7 @@ export default function CheckoutPage() {
   const [payment, setPayment] = useState("cod");
   const [placed, setPlaced] = useState(false);
 
+  console.log(items);
   const shipping = delivery === "delivery" ? 150 : 0;
   const orderNum = useState(() =>
     Math.floor(Math.random() * 10000)

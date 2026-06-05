@@ -5,6 +5,7 @@ const orderSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      required: true,
     },
     orderNumber: {
       type: String,
@@ -42,6 +43,9 @@ const orderSchema = new mongoose.Schema(
         productId: mongoose.Schema.Types.ObjectId,
         variantId: mongoose.Schema.Types.ObjectId,
         quantity: Number,
+        name: String,
+        sku: String,
+        price: Number,
       },
     ],
     subtotal: {

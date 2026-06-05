@@ -1,6 +1,5 @@
 import "./config/env.js";
 import "./config/redis.js";
-import "./models/index.js";
 
 import app from "./app.js";
 import connectDB from "./config/db.js";
