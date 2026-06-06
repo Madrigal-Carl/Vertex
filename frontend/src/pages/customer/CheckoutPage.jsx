@@ -9,6 +9,7 @@ import {
   Banknote,
 } from "lucide-react";
 import { createOrder } from "@/services/order.service";
+import { useRef } from "react";
 
 function formatPrice(p) {
   const value = Number(p ?? 0);
@@ -29,6 +30,7 @@ export default function CheckoutPage() {
   const [delivery, setDelivery] = useState("pickup");
   const [payment, setPayment] = useState("cod");
   const shipping = delivery === "delivery" ? 150 : 0;
+  const idempotencyKeyRef = useRef(crypto.randomUUID());
 
   const handlePlaceOrder = async () => {
     try {
@@ -42,14 +44,13 @@ export default function CheckoutPage() {
         })),
       };
 
-      await createOrder(payload);
+      await createOrder(payload, idempotencyKeyRef.current);
+
+      idempotencyKeyRef.current = crypto.randomUUID();
+
       clearCart();
     } catch (err) {
       console.error(err);
-
-      alert(
-        err?.response?.data?.message || err.message || "Failed to place order",
-      );
     }
   };
 
