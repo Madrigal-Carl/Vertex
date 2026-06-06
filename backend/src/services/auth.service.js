@@ -113,6 +113,11 @@ export const googleAuthUser = async (token) => {
 
   let user = await User.findOne({ email });
 
+  // Existing email/password account?
+  if (user && !user.googleId) {
+    throw new Error("This email is already registered with password login");
+  }
+
   // CREATE USER
   if (!user) {
     user = await User.create({
