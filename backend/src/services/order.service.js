@@ -3,9 +3,12 @@ import Order from "../models/order.model.js";
 import Product from "../models/product.model.js";
 import Variant from "../models/variant.model.js";
 import Inventory from "../models/inventory.model.js";
+import emailQueue from "../queues/email.queue.js";
+import { EMAIL_JOBS } from "../queues/email.jobs.js";
 
 export const createOrder = async ({
   userId,
+  email,
   idempotencyKey,
   deliveryMethod,
   paymentMethod,
@@ -92,6 +95,15 @@ export const createOrder = async ({
       subtotal,
       shippingFee,
       totalAmount,
+    });
+
+    await emailQueue.add("order-submitted", {
+      type: EMAIL_JOBS.ORDER_SUBMITTED,
+      data: {
+        to: email,
+        orderNumber: order.orderNumber,
+        totalAmount: order.totalAmount,
+      },
     });
 
     await redis.set(

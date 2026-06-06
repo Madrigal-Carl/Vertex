@@ -5,6 +5,7 @@ import { EMAIL_JOBS } from "../email.jobs.js";
 
 import { verifyEmailTemplate } from "../../templates/email/verify.template.js";
 import { resetPasswordTemplate } from "../../templates/email/reset-password.template.js";
+import { orderSubmittedTemplate } from "../../templates/email/order-submitted.template.js";
 
 const emailWorker = new Worker(
   "emailQueue",
@@ -25,6 +26,17 @@ const emailWorker = new Worker(
           to: data.to,
           subject: "Reset Your Password",
           html: resetPasswordTemplate({ resetUrl: data.resetUrl }),
+        });
+      },
+
+      [EMAIL_JOBS.ORDER_SUBMITTED]: async () => {
+        return sendEmail({
+          to: data.to,
+          subject: `Order Confirmation - ${data.orderNumber}`,
+          html: orderSubmittedTemplate({
+            orderNumber: data.orderNumber,
+            totalAmount: data.totalAmount,
+          }),
         });
       },
     };
