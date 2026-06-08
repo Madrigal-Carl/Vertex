@@ -16,12 +16,12 @@ export default function Header({ breadcrumbMap }) {
         className="flex items-center gap-1.5 text-sm ml-10 md:ml-0"
         aria-label="Breadcrumb"
       >
-        <span className="text-muted-foreground/50 font-medium select-none">
+        <span className="text-muted-foreground/50 font-medium select-none hidden md:inline">
           Vertex
         </span>
         {crumb && (
           <>
-            <LuChevronRight className="w-3.5 h-3.5 text-muted-foreground/30 shrink-0" />
+            <LuChevronRight className="w-3.5 h-3.5 text-muted-foreground/30 shrink-0 hidden md:inline" />
             <span className="text-muted-foreground/70 font-medium">
               {crumb.section}
             </span>

@@ -33,7 +33,7 @@ export const adminNavSections = [
         label: "Orders",
         items: [
             {
-                name: "All Orders",
+                name: "Orders",
                 href: "/admin/orders",
                 icon: LuShoppingCart,
             },
@@ -151,7 +151,7 @@ export const adminNavSections = [
     },
 ];
 
-export const adminBreadcrumbMap = {
+export const adminBreadcrumbs = {
     "/admin/overview": { section: "Dashboard", page: "Overview" },
     "/admin/orders": { section: "Orders", page: "All Orders" },
     "/admin/products": { section: "Products", page: "All Products" },
