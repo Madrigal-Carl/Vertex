@@ -1,33 +1,33 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "@/components/public/Sidebar";
-// import Header from "@/components/public/Header";
+import Header from "@/components/public/Header";
 import {
-  LuLayoutDashboard as LayoutDashboard,
-  LuShoppingCart as ShoppingCart,
-  LuPackage as Package,
-  LuTags as Tags,
-  LuStar as Star,
-  LuArchive as Archive,
-  LuHash as Hash,
-  LuArrowLeftRight as ArrowLeftRight,
-  LuBriefcase as Briefcase,
-  LuFolderOpen as FolderOpen,
-  LuCalendarCheck as CalendarCheck,
-  LuChartBar as BarChart3,
-  LuCreditCard as CreditCard,
-  LuUsers as Users,
-  LuMessageSquare as MessageSquare,
-  LuSettings as Settings,
+  LuLayoutDashboard,
+  LuShoppingCart,
+  LuPackage,
+  LuTags,
+  LuStar,
+  LuArchive,
+  LuHash,
+  LuArrowLeftRight,
+  LuBriefcase,
+  LuFolderOpen,
+  LuCalendarCheck,
+  LuChartBar,
+  LuCreditCard,
+  LuUsers,
+  LuMessageSquare,
+  LuSettings,
 } from "react-icons/lu";
 
-export const adminNavSections = [
+const adminNavSections = [
   {
     label: "Dashboard",
     items: [
       {
         name: "Overview",
         href: "/admin/overview",
-        icon: LayoutDashboard,
+        icon: LuLayoutDashboard,
       },
     ],
   },
@@ -37,7 +37,7 @@ export const adminNavSections = [
       {
         name: "All Orders",
         href: "/admin/orders",
-        icon: ShoppingCart,
+        icon: LuShoppingCart,
       },
     ],
   },
@@ -47,17 +47,17 @@ export const adminNavSections = [
       {
         name: "Products",
         href: "/admin/products",
-        icon: Package,
+        icon: LuPackage,
       },
       {
         name: "Categories",
         href: "/admin/products/categories",
-        icon: Tags,
+        icon: LuTags,
       },
       {
         name: "Reviews",
         href: "/admin/products/reviews",
-        icon: Star,
+        icon: LuStar,
       },
     ],
   },
@@ -67,17 +67,17 @@ export const adminNavSections = [
       {
         name: "Stock",
         href: "/admin/inventory",
-        icon: Archive,
+        icon: LuArchive,
       },
       {
         name: "Serial Numbers",
         href: "/admin/inventory/serial-numbers",
-        icon: Hash,
+        icon: LuHash,
       },
       {
         name: "Movements",
         href: "/admin/inventory/movements",
-        icon: ArrowLeftRight,
+        icon: LuArrowLeftRight,
       },
     ],
   },
@@ -87,22 +87,22 @@ export const adminNavSections = [
       {
         name: "Services",
         href: "/admin/services",
-        icon: Briefcase,
+        icon: LuBriefcase,
       },
       {
         name: "Categories",
         href: "/admin/services/categories",
-        icon: FolderOpen,
+        icon: LuFolderOpen,
       },
       {
         name: "Bookings",
         href: "/admin/services/bookings",
-        icon: CalendarCheck,
+        icon: LuCalendarCheck,
       },
       {
         name: "Reviews",
         href: "/admin/services/reviews",
-        icon: Star,
+        icon: LuStar,
       },
     ],
   },
@@ -112,12 +112,12 @@ export const adminNavSections = [
       {
         name: "Overview",
         href: "/admin/sales",
-        icon: BarChart3,
+        icon: LuChartBar,
       },
       {
         name: "Transactions",
         href: "/admin/sales/transactions",
-        icon: CreditCard,
+        icon: LuCreditCard,
       },
     ],
   },
@@ -127,7 +127,7 @@ export const adminNavSections = [
       {
         name: "Users",
         href: "/admin/staff/users",
-        icon: Users,
+        icon: LuUsers,
       },
     ],
   },
@@ -137,7 +137,7 @@ export const adminNavSections = [
       {
         name: "Reviews",
         href: "/admin/website/reviews",
-        icon: MessageSquare,
+        icon: LuMessageSquare,
       },
     ],
   },
@@ -147,7 +147,7 @@ export const adminNavSections = [
       {
         name: "Settings",
         href: "/admin/settings",
-        icon: Settings,
+        icon: LuSettings,
       },
     ],
   },
@@ -165,7 +165,7 @@ export default function AdminLayout() {
         }}
       />
       <div className="flex-1 flex flex-col md:pl-[240px] transition-all duration-300">
-        {/* <Header /> */}
+        <Header />
         <main className="flex-1 p-6 overflow-x-hidden">
           <Outlet />
         </main>
