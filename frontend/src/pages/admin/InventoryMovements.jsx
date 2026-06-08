@@ -42,13 +42,11 @@ export default function InventoryMovements() {
   const [currentPage, setCurrentPage] = useState(1);
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold">Inventory Movements</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            Track all stock movements across inventory
-          </p>
-        </div>
+      <div className="flex flex-col justify-between">
+        <h1 className="text-2xl font-bold">Inventory Movements</h1>
+        <p className="text-sm text-muted-foreground mt-0.5">
+          Track all stock movements across inventory
+        </p>
       </div>
 
       <div className="bg-card border border-border rounded-[6px] overflow-hidden flex flex-col">

@@ -30,13 +30,11 @@ export default function InventorySerialNumbers() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold">Inventory Serial Numbers</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            All tracked serial numbers across inventory
-          </p>
-        </div>
+      <div className="flex flex-col justify-between">
+        <h1 className="text-2xl font-bold">Inventory Serial Numbers</h1>
+        <p className="text-sm text-muted-foreground mt-0.5">
+          All tracked serial numbers across inventory
+        </p>
       </div>
 
       <div className="bg-card border border-border rounded-[6px] overflow-hidden flex flex-col">

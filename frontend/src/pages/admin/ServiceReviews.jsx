@@ -6,22 +6,27 @@ import { Pagination } from "@/components/admin/Pagination";
 import { StarRating } from "@/components/admin/StarRating";
 import { LuCheck as Check, LuX as X } from "react-icons/lu";
 
-export default function ProductReviews() {
+export default function ServiceReviews() {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const serviceReviews = recentReviews.filter(
+    (r) => r.product === "Device Repair",
+  );
   return (
     <div className="space-y-6">
-      <div className="flex flex-col justify-between">
-        <h1 className="text-2xl font-bold">Product Reviews</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">
-          Manage and moderate customer product reviews
-        </p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold">Service Reviews</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">
+            Manage and moderate customer service reviews
+          </p>
+        </div>
       </div>
 
       <div className="bg-card border border-border rounded-[6px] overflow-hidden flex flex-col">
         <div className="p-4 border-b border-border">
           <SearchBar
-            placeholder="Search reviews by product or customer..."
+            placeholder="Search reviews by service or customer..."
             value={search}
             onChange={setSearch}
             className="w-full sm:w-80"
@@ -32,7 +37,7 @@ export default function ProductReviews() {
           <table className="w-full text-sm text-left">
             <thead className="bg-secondary/60 text-muted-foreground border-b border-border">
               <tr>
-                <th className="px-4 py-3 font-medium">Product</th>
+                <th className="px-4 py-3 font-medium">Service</th>
                 <th className="px-4 py-3 font-medium">Customer</th>
                 <th className="px-4 py-3 font-medium">Rating</th>
                 <th className="px-4 py-3 font-medium">Review</th>
@@ -42,7 +47,7 @@ export default function ProductReviews() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {recentReviews.map((review) => (
+              {serviceReviews.map((review) => (
                 <tr
                   key={review.id}
                   className="hover:bg-secondary/30 transition-colors"
@@ -55,14 +60,14 @@ export default function ProductReviews() {
                   </td>
                   <td className="px-4 py-3 max-w-xs">
                     <p className="truncate text-muted-foreground">
-                      Great product, highly recommend!
+                      Great service, very professional!
                     </p>
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">
                     {review.date}
                   </td>
                   <td className="px-4 py-3">
-                    <StatusBadge status="Pending" />
+                    <StatusBadge status="Approved" />
                   </td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex justify-end gap-1">

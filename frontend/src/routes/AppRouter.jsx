@@ -22,6 +22,10 @@ import ProductReviews from "@/pages/admin/ProductReviews";
 import Inventory from "@/pages/admin/Inventory";
 import InventorySerialNumbers from "@/pages/admin/InventorySerialNumbers";
 import InventoryMovements from "@/pages/admin/InventoryMovements";
+import Services from "@/pages/admin/Services";
+import ServiceCategories from "@/pages/admin/ServiceCategories";
+import ServiceBooking from "@/pages/admin/ServiceBooking";
+import ServiceReviews from "@/pages/admin/ServiceReviews";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 
 import TechnicianDashboard from "@/pages/technician/TechnicianDashboard";
@@ -91,10 +95,10 @@ export default function AppRouter() {
               path="inventory/movements"
               element={<InventoryMovements />}
             />
-            <Route path="services" element={<AdminDashboard />} />
-            <Route path="services/categories" element={<AdminDashboard />} />
-            <Route path="services/bookings" element={<AdminDashboard />} />
-            <Route path="services/reviews" element={<AdminDashboard />} />
+            <Route path="services" element={<Services />} />
+            <Route path="services/categories" element={<ServiceCategories />} />
+            <Route path="services/bookings" element={<ServiceBooking />} />
+            <Route path="services/reviews" element={<ServiceReviews />} />
             <Route path="sales" element={<AdminDashboard />} />
             <Route path="sales/transactions" element={<AdminDashboard />} />
             <Route path="staff/users" element={<AdminDashboard />} />
