@@ -4,11 +4,23 @@ import { LuChevronRight } from "react-icons/lu";
 import useAuth from "@/hooks/useAuth";
 
 export default function Header({ breadcrumbMap }) {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { pathname } = useLocation();
 
   const crumb = breadcrumbMap[pathname];
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+
+      setUserMenuOpen(false);
+
+      navigate("/auth", { replace: true });
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   return (
     <header className="h-14 bg-card border-b border-border flex items-center justify-between px-6 sticky top-0 z-40">
@@ -65,6 +77,7 @@ export default function Header({ breadcrumbMap }) {
               </div>
               <div className="border-t border-border py-1">
                 <button
+                  onClick={handleLogout}
                   className="flex items-center w-full px-3 py-1.5 text-sm text-[#E60000] hover:bg-red-50 text-left cursor-pointer"
                   data-testid="menu-logout"
                 >
