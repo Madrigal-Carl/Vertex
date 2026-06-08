@@ -19,6 +19,9 @@ import Orders from "@/pages/admin/Orders";
 import Products from "@/pages/admin/Products";
 import ProductCategories from "@/pages/admin/ProductCategories";
 import ProductReviews from "@/pages/admin/ProductReviews";
+import Inventory from "@/pages/admin/Inventory";
+import InventorySerialNumbers from "@/pages/admin/InventorySerialNumbers";
+import InventoryMovements from "@/pages/admin/InventoryMovements";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 
 import TechnicianDashboard from "@/pages/technician/TechnicianDashboard";
@@ -79,12 +82,15 @@ export default function AppRouter() {
             <Route path="products" element={<Products />} />
             <Route path="products/categories" element={<ProductCategories />} />
             <Route path="products/reviews" element={<ProductReviews />} />
-            <Route path="inventory" element={<AdminDashboard />} />
+            <Route path="inventory" element={<Inventory />} />
             <Route
               path="inventory/serial-numbers"
-              element={<AdminDashboard />}
+              element={<InventorySerialNumbers />}
             />
-            <Route path="inventory/movements" element={<AdminDashboard />} />
+            <Route
+              path="inventory/movements"
+              element={<InventoryMovements />}
+            />
             <Route path="services" element={<AdminDashboard />} />
             <Route path="services/categories" element={<AdminDashboard />} />
             <Route path="services/bookings" element={<AdminDashboard />} />
