@@ -17,6 +17,8 @@ import AdminLayout from "@/layouts/AdminLayout";
 import Overview from "@/pages/admin/Overview";
 import Orders from "@/pages/admin/Orders";
 import Products from "@/pages/admin/Products";
+import ProductCategories from "@/pages/admin/ProductCategories";
+import ProductReviews from "@/pages/admin/ProductReviews";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 
 import TechnicianDashboard from "@/pages/technician/TechnicianDashboard";
@@ -75,8 +77,8 @@ export default function AppRouter() {
             <Route path="overview" element={<Overview />} />
             <Route path="orders" element={<Orders />} />
             <Route path="products" element={<Products />} />
-            <Route path="products/categories" element={<AdminDashboard />} />
-            <Route path="products/reviews" element={<AdminDashboard />} />
+            <Route path="products/categories" element={<ProductCategories />} />
+            <Route path="products/reviews" element={<ProductReviews />} />
             <Route path="inventory" element={<AdminDashboard />} />
             <Route
               path="inventory/serial-numbers"
