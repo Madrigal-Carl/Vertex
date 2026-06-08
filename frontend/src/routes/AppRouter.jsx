@@ -14,6 +14,7 @@ import AddressPage from "@/pages/customer/AddressPage";
 import SettingPage from "@/pages/customer/SettingPage";
 
 import AdminLayout from "@/layouts/AdminLayout";
+import Overview from "@/pages/admin/Overview";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 
 import TechnicianDashboard from "@/pages/technician/TechnicianDashboard";
@@ -68,48 +69,27 @@ export default function AppRouter() {
 
         {/* ADMIN ONLY */}
         <Route element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} />}>
-          <Route element={<AdminLayout />}>
-            <Route path="/admin/overview" element={<AdminDashboard />} />
-            <Route path="/admin/orders" element={<AdminDashboard />} />
-            <Route path="/admin/products" element={<AdminDashboard />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route path="overview" element={<Overview />} />
+            <Route path="orders" element={<AdminDashboard />} />
+            <Route path="products" element={<AdminDashboard />} />
+            <Route path="products/categories" element={<AdminDashboard />} />
+            <Route path="products/reviews" element={<AdminDashboard />} />
+            <Route path="inventory" element={<AdminDashboard />} />
             <Route
-              path="/admin/products/categories"
+              path="inventory/serial-numbers"
               element={<AdminDashboard />}
             />
-            <Route
-              path="/admin/products/reviews"
-              element={<AdminDashboard />}
-            />
-            <Route path="/admin/inventory" element={<AdminDashboard />} />
-            <Route
-              path="/admin/inventory/serial-numbers"
-              element={<AdminDashboard />}
-            />
-            <Route
-              path="/admin/inventory/movements"
-              element={<AdminDashboard />}
-            />
-            <Route path="/admin/services" element={<AdminDashboard />} />
-            <Route
-              path="/admin/services/categories"
-              element={<AdminDashboard />}
-            />
-            <Route
-              path="/admin/services/bookings"
-              element={<AdminDashboard />}
-            />
-            <Route
-              path="/admin/services/reviews"
-              element={<AdminDashboard />}
-            />
-            <Route path="/admin/sales" element={<AdminDashboard />} />
-            <Route
-              path="/admin/sales/transactions"
-              element={<AdminDashboard />}
-            />
-            <Route path="/admin/staff/users" element={<AdminDashboard />} />
-            <Route path="/admin/website/reviews" element={<AdminDashboard />} />
-            <Route path="/admin/settings" element={<AdminDashboard />} />
+            <Route path="inventory/movements" element={<AdminDashboard />} />
+            <Route path="services" element={<AdminDashboard />} />
+            <Route path="services/categories" element={<AdminDashboard />} />
+            <Route path="services/bookings" element={<AdminDashboard />} />
+            <Route path="services/reviews" element={<AdminDashboard />} />
+            <Route path="sales" element={<AdminDashboard />} />
+            <Route path="sales/transactions" element={<AdminDashboard />} />
+            <Route path="staff/users" element={<AdminDashboard />} />
+            <Route path="website/reviews" element={<AdminDashboard />} />
+            <Route path="settings" element={<AdminDashboard />} />
           </Route>
         </Route>
 
