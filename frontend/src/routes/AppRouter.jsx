@@ -25,6 +25,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import RoleRedirect from "./RoleRedirect";
 import FallbackRedirect from "./FallbackRedirect";
 import PublicOnlyRoute from "./PublicOnlyRoute";
+import AuthRedirectRoute from "./AuthRedirectRoute";
 
 import { ROLES } from "@/constants/roles";
 
@@ -35,13 +36,24 @@ export default function AppRouter() {
     <>
       <ScrollToTop />
       <Routes>
-        {/* PUBLIC */}
-        <Route element={<PublicLayout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/products" element={<ProductPage />} />
-          <Route path="/services" element={<ServicePage />} />
-          <Route path="/product/:id" element={<ProductDetailPage />} />
+        {/* PUBLIC & CUSTOMER */}
+        <Route element={<AuthRedirectRoute />}>
+          <Route element={<PublicLayout />}>
+            {/* PUBLIC */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/products" element={<ProductPage />} />
+            <Route path="/services" element={<ServicePage />} />
+            <Route path="/product/:id" element={<ProductDetailPage />} />
+
+            {/* CUSTOMER ONLY */}
+            <Route element={<ProtectedRoute allowedRoles={[ROLES.CUSTOMER]} />}>
+              <Route path="/checkout" element={<CheckoutPage />} />
+              <Route path="/profile/history" element={<HistoryPage />} />
+              <Route path="/profile/address" element={<AddressPage />} />
+              <Route path="/profile/settings" element={<SettingPage />} />
+            </Route>
+          </Route>
         </Route>
 
         {/* ROLE REDIRECT */}
@@ -51,16 +63,6 @@ export default function AppRouter() {
         <Route element={<PublicOnlyRoute />}>
           <Route element={<PublicLayout />}>
             <Route path="/auth" element={<AuthPage />} />
-          </Route>
-        </Route>
-
-        {/* CUSTOMER ONLY */}
-        <Route element={<ProtectedRoute allowedRoles={[ROLES.CUSTOMER]} />}>
-          <Route element={<PublicLayout />}>
-            <Route path="/checkout" element={<CheckoutPage />} />
-            <Route path="/profile/history" element={<HistoryPage />} />
-            <Route path="/profile/address" element={<AddressPage />} />
-            <Route path="/profile/settings" element={<SettingPage />} />
           </Route>
         </Route>
 
