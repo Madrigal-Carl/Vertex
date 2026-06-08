@@ -153,19 +153,35 @@ const adminNavSections = [
   },
 ];
 
+const adminBreadcrumbMap = {
+  "/admin/overview": { section: "Dashboard", page: "Overview" },
+  "/admin/orders": { section: "Orders", page: "All Orders" },
+  "/admin/products": { section: "Products", page: "All Products" },
+  "/admin/products/categories": { section: "Products", page: "Categories" },
+  "/admin/products/reviews": { section: "Products", page: "Reviews" },
+  "/admin/inventory": { section: "Inventory", page: "Stock" },
+  "/admin/inventory/serial-numbers": {
+    section: "Inventory",
+    page: "Serial Numbers",
+  },
+  "/admin/inventory/movements": { section: "Inventory", page: "Movements" },
+  "/admin/services": { section: "Services", page: "All Services" },
+  "/admin/services/categories": { section: "Services", page: "Categories" },
+  "/admin/services/bookings": { section: "Services", page: "Bookings" },
+  "/admin/services/reviews": { section: "Services", page: "Reviews" },
+  "/admin/sales": { section: "Sales", page: "Overview" },
+  "/admin/sales/transactions": { section: "Sales", page: "Transactions" },
+  "/admin/staff/users": { section: "Staff", page: "Users" },
+  "/admin/website/reviews": { section: "Website", page: "Reviews" },
+  "/admin/settings": { section: "Settings", page: "Settings" },
+};
+
 export default function AdminLayout() {
   return (
     <div className="min-h-screen bg-background flex">
-      <Sidebar
-        navSections={adminNavSections}
-        user={{
-          initial: "A",
-          name: "Admin User",
-          email: "admin@vertex.com",
-        }}
-      />
+      <Sidebar navSections={adminNavSections} />
       <div className="flex-1 flex flex-col md:pl-[240px] transition-all duration-300">
-        <Header />
+        <Header breadcrumbMap={adminBreadcrumbMap} />
         <main className="flex-1 p-6 overflow-x-hidden">
           <Outlet />
         </main>

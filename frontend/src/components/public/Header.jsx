@@ -3,35 +3,13 @@ import { useLocation } from "react-router-dom";
 import { LuChevronRight } from "react-icons/lu";
 import useAuth from "@/hooks/useAuth";
 
-const BREADCRUMB_MAP = {
-  "/admin/overview": { section: "Dashboard", page: "Overview" },
-  "/admin/orders": { section: "Orders", page: "All Orders" },
-  "/admin/products": { section: "Products", page: "All Products" },
-  "/admin/products/categories": { section: "Products", page: "Categories" },
-  "/admin/products/reviews": { section: "Products", page: "Reviews" },
-  "/admin/inventory": { section: "Inventory", page: "Stock" },
-  "/admin/inventory/serial-numbers": {
-    section: "Inventory",
-    page: "Serial Numbers",
-  },
-  "/admin/inventory/movements": { section: "Inventory", page: "Movements" },
-  "/admin/services": { section: "Services", page: "All Services" },
-  "/admin/services/categories": { section: "Services", page: "Categories" },
-  "/admin/services/bookings": { section: "Services", page: "Bookings" },
-  "/admin/services/reviews": { section: "Services", page: "Reviews" },
-  "/admin/sales": { section: "Sales", page: "Overview" },
-  "/admin/sales/transactions": { section: "Sales", page: "Transactions" },
-  "/admin/staff/users": { section: "Staff", page: "Users" },
-  "/admin/website/reviews": { section: "Website", page: "Reviews" },
-  "/admin/settings": { section: "Settings", page: "Settings" },
-};
-
-export default function Header() {
+export default function Header({ breadcrumbMap }) {
   const { user } = useAuth();
   const { pathname } = useLocation();
 
-  const crumb = BREADCRUMB_MAP[pathname];
+  const crumb = breadcrumbMap[pathname];
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+
   return (
     <header className="h-14 bg-card border-b border-border flex items-center justify-between px-6 sticky top-0 z-40">
       <nav
