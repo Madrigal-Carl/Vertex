@@ -47,9 +47,7 @@ function SidebarContent({ navSections }) {
               {section.items.map((item) => {
                 const Icon = item.icon;
 
-                const isActive =
-                  normalizedLocation === item.href ||
-                  normalizedLocation.startsWith(`${item.href}/`);
+                const isActive = normalizedLocation === item.href;
 
                 return (
                   <Link

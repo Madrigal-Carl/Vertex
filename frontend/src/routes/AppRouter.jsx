@@ -70,6 +70,46 @@ export default function AppRouter() {
         <Route element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} />}>
           <Route element={<AdminLayout />}>
             <Route path="/admin/overview" element={<AdminDashboard />} />
+            <Route path="/admin/orders" element={<AdminDashboard />} />
+            <Route path="/admin/products" element={<AdminDashboard />} />
+            <Route
+              path="/admin/products/categories"
+              element={<AdminDashboard />}
+            />
+            <Route
+              path="/admin/products/reviews"
+              element={<AdminDashboard />}
+            />
+            <Route path="/admin/inventory" element={<AdminDashboard />} />
+            <Route
+              path="/admin/inventory/serial-numbers"
+              element={<AdminDashboard />}
+            />
+            <Route
+              path="/admin/inventory/movements"
+              element={<AdminDashboard />}
+            />
+            <Route path="/admin/services" element={<AdminDashboard />} />
+            <Route
+              path="/admin/services/categories"
+              element={<AdminDashboard />}
+            />
+            <Route
+              path="/admin/services/bookings"
+              element={<AdminDashboard />}
+            />
+            <Route
+              path="/admin/services/reviews"
+              element={<AdminDashboard />}
+            />
+            <Route path="/admin/sales" element={<AdminDashboard />} />
+            <Route
+              path="/admin/sales/transactions"
+              element={<AdminDashboard />}
+            />
+            <Route path="/admin/staff/users" element={<AdminDashboard />} />
+            <Route path="/admin/website/reviews" element={<AdminDashboard />} />
+            <Route path="/admin/settings" element={<AdminDashboard />} />
           </Route>
         </Route>
 
