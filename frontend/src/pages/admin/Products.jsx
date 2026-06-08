@@ -22,7 +22,7 @@ export default function Products() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold">Products</h1>
+          <h1 className="text-2xl font-bold">All Products</h1>
           <p className="text-sm text-muted-foreground mt-0.5">
             {productsList.length} total products
           </p>
@@ -47,7 +47,7 @@ export default function Products() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="px-6 pt-6 pb-4 border-b border-border sticky top-0 bg-card z-10">
-              <h2 className="text-lg font-serif font-black">Add New Product</h2>
+              <h2 className="text-lg font-black">Add New Product</h2>
               <p className="text-sm text-muted-foreground">
                 Fill in the details below to create a new product listing.
               </p>

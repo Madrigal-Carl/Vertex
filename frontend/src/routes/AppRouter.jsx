@@ -15,6 +15,7 @@ import SettingPage from "@/pages/customer/SettingPage";
 
 import AdminLayout from "@/layouts/AdminLayout";
 import Overview from "@/pages/admin/Overview";
+import Orders from "@/pages/admin/Orders";
 import Products from "@/pages/admin/Products";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 
@@ -72,7 +73,7 @@ export default function AppRouter() {
         <Route element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} />}>
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="overview" element={<Overview />} />
-            <Route path="orders" element={<AdminDashboard />} />
+            <Route path="orders" element={<Orders />} />
             <Route path="products" element={<Products />} />
             <Route path="products/categories" element={<AdminDashboard />} />
             <Route path="products/reviews" element={<AdminDashboard />} />

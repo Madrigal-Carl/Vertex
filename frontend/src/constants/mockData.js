@@ -58,14 +58,17 @@ export const recentReviews = [
     { id: 'REV-002', product: 'USB-C Cable', customer: 'Jane S.', rating: 4, date: '2023-10-24' },
     { id: 'REV-003', product: 'Device Repair', customer: 'Bob J.', rating: 5, date: '2023-10-23' }
 ];
+const CUSTOMERS = ['John Doe', 'Jane Smith', 'Bob Johnson', 'Alice Williams', 'Charlie Brown', 'Diana Prince', 'Eve Carter', 'Frank Miller', 'Grace Lee', 'Hank Wilson'];
 export const ordersList = Array.from({ length: 25 }).map((_, i) => ({
     id: `ORD-${String(i + 1).padStart(3, '0')}`,
     orderNumber: `100${i + 1}`,
-    productsCount: Math.floor(Math.random() * 5) + 1,
-    total: (Math.random() * 500 + 20).toFixed(2),
-    paymentStatus: ['Paid', 'Pending', 'Failed'][Math.floor(Math.random() * 3)],
-    orderStatus: ['Pending', 'Processing', 'Completed', 'Cancelled'][Math.floor(Math.random() * 4)],
-    date: `2023-10-${Math.floor(Math.random() * 28 + 1).toString().padStart(2, '0')}`
+    customer: CUSTOMERS[i % CUSTOMERS.length],
+    items: Math.floor(i % 5) + 1,
+    amount: parseFloat((((i * 37.7 + 22.5) % 480) + 20).toFixed(2)),
+    paymentStatus: ['Paid', 'Pending', 'Failed'][i % 3],
+    status: ['Pending', 'Processing', 'Completed', 'Cancelled'][i % 4],
+    paymentStatus: ['Pending', 'Processing', 'Completed', 'Cancelled'][i % 4],
+    date: `2023-10-${((i % 28) + 1).toString().padStart(2, '0')}`
 }));
 const PRODUCT_CATALOG = [
     { name: 'Wireless Noise-Cancelling Headphones', category: 'Electronics', price: 149.99, variants: [{ id: 'v1', label: 'Black', stock: 12 }, { id: 'v2', label: 'White', stock: 5 }, { id: 'v3', label: 'Midnight Blue', stock: 0 }] },
