@@ -30,9 +30,9 @@ function VertexLogo() {
             V
           </span>
         </div>
-        <span className="font-display font-bold text-white tracking-[0.12em] text-xl uppercase group-hover:text-white/90 transition-colors">
+        <h1 className="font-display font-bold text-white tracking-[0.12em] text-xl uppercase group-hover:text-white/90 transition-colors">
           Vertex
-        </span>
+        </h1>
       </div>
     </Link>
   );

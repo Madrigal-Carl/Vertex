@@ -13,7 +13,9 @@ import HistoryPage from "@/pages/customer/HistoryPage";
 import AddressPage from "@/pages/customer/AddressPage";
 import SettingPage from "@/pages/customer/SettingPage";
 
+import AdminLayout from "@/layouts/AdminLayout";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
+
 import TechnicianDashboard from "@/pages/technician/TechnicianDashboard";
 import CashierDashboard from "@/pages/cashier/CashierDashboard";
 
@@ -64,7 +66,9 @@ export default function AppRouter() {
 
         {/* ADMIN ONLY */}
         <Route element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} />}>
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route element={<AdminLayout />}>
+            <Route path="/admin/overview" element={<AdminDashboard />} />
+          </Route>
         </Route>
 
         {/* TECHNICIAN ONLY */}

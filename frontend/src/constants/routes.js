@@ -1,6 +1,6 @@
 export const ROLE_ROUTES = {
-  admin: "/admin/dashboard",
-  technician: "/technician/dashboard",
-  cashier: "/cashier/dashboard",
+  admin: "/admin/overview",
+  technician: "/technician/overview",
+  cashier: "/cashier/overview",
   customer: "/",
 };
