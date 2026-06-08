@@ -2,32 +2,32 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "@/components/public/Sidebar";
 // import Header from "@/components/public/Header";
 import {
-  HiOutlineViewGrid,
-  HiOutlineShoppingCart,
-  HiOutlineCube,
-  HiOutlineTag,
-  HiOutlineStar,
-  HiOutlineArchive,
-  HiOutlineHashtag,
-  HiOutlineSwitchHorizontal,
-  HiOutlineBriefcase,
-  HiOutlineFolder,
-  HiOutlineCalendar,
-  HiOutlineChartBar,
-  HiOutlineCreditCard,
-  HiOutlineUsers,
-  HiOutlineChat,
-  HiOutlineCog,
-} from "react-icons/hi";
+  LuLayoutDashboard as LayoutDashboard,
+  LuShoppingCart as ShoppingCart,
+  LuPackage as Package,
+  LuTags as Tags,
+  LuStar as Star,
+  LuArchive as Archive,
+  LuHash as Hash,
+  LuArrowLeftRight as ArrowLeftRight,
+  LuBriefcase as Briefcase,
+  LuFolderOpen as FolderOpen,
+  LuCalendarCheck as CalendarCheck,
+  LuChartBar as BarChart3,
+  LuCreditCard as CreditCard,
+  LuUsers as Users,
+  LuMessageSquare as MessageSquare,
+  LuSettings as Settings,
+} from "react-icons/lu";
 
-const navSections = [
+export const adminNavSections = [
   {
     label: "Dashboard",
     items: [
       {
         name: "Overview",
-        href: "/overview",
-        icon: HiOutlineViewGrid,
+        href: "/admin/overview",
+        icon: LayoutDashboard,
       },
     ],
   },
@@ -36,8 +36,8 @@ const navSections = [
     items: [
       {
         name: "All Orders",
-        href: "/orders",
-        icon: HiOutlineShoppingCart,
+        href: "/admin/orders",
+        icon: ShoppingCart,
       },
     ],
   },
@@ -46,18 +46,18 @@ const navSections = [
     items: [
       {
         name: "Products",
-        href: "/products",
-        icon: HiOutlineCube,
+        href: "/admin/products",
+        icon: Package,
       },
       {
         name: "Categories",
-        href: "/products/categories",
-        icon: HiOutlineTag,
+        href: "/admin/products/categories",
+        icon: Tags,
       },
       {
         name: "Reviews",
-        href: "/products/reviews",
-        icon: HiOutlineStar,
+        href: "/admin/products/reviews",
+        icon: Star,
       },
     ],
   },
@@ -66,18 +66,88 @@ const navSections = [
     items: [
       {
         name: "Stock",
-        href: "/inventory",
-        icon: HiOutlineArchive,
+        href: "/admin/inventory",
+        icon: Archive,
       },
       {
         name: "Serial Numbers",
-        href: "/inventory/serial-numbers",
-        icon: HiOutlineHashtag,
+        href: "/admin/inventory/serial-numbers",
+        icon: Hash,
       },
       {
         name: "Movements",
-        href: "/inventory/movements",
-        icon: HiOutlineSwitchHorizontal,
+        href: "/admin/inventory/movements",
+        icon: ArrowLeftRight,
+      },
+    ],
+  },
+  {
+    label: "Services",
+    items: [
+      {
+        name: "Services",
+        href: "/admin/services",
+        icon: Briefcase,
+      },
+      {
+        name: "Categories",
+        href: "/admin/services/categories",
+        icon: FolderOpen,
+      },
+      {
+        name: "Bookings",
+        href: "/admin/services/bookings",
+        icon: CalendarCheck,
+      },
+      {
+        name: "Reviews",
+        href: "/admin/services/reviews",
+        icon: Star,
+      },
+    ],
+  },
+  {
+    label: "Sales",
+    items: [
+      {
+        name: "Overview",
+        href: "/admin/sales",
+        icon: BarChart3,
+      },
+      {
+        name: "Transactions",
+        href: "/admin/sales/transactions",
+        icon: CreditCard,
+      },
+    ],
+  },
+  {
+    label: "Staff",
+    items: [
+      {
+        name: "Users",
+        href: "/admin/staff/users",
+        icon: Users,
+      },
+    ],
+  },
+  {
+    label: "Website",
+    items: [
+      {
+        name: "Reviews",
+        href: "/admin/website/reviews",
+        icon: MessageSquare,
+      },
+    ],
+  },
+  {
+    label: "Settings",
+    items: [
+      {
+        name: "Settings",
+        href: "/admin/settings",
+        icon: Settings,
       },
     ],
   },
@@ -87,7 +157,7 @@ export default function AdminLayout() {
   return (
     <div className="min-h-screen bg-background flex">
       <Sidebar
-        navSections={navSections}
+        navSections={adminNavSections}
         user={{
           initial: "A",
           name: "Admin User",
