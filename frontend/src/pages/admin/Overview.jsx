@@ -186,13 +186,13 @@ export default function Overview() {
                 <Bar
                   dataKey="product"
                   name="Products"
-                  fill="#111"
+                  fill="#E60000"
                   radius={[3, 3, 0, 0]}
                 />
                 <Bar
                   dataKey="service"
                   name="Services"
-                  fill="#ccc"
+                  fill="#6b7280"
                   radius={[3, 3, 0, 0]}
                 />
               </BarChart>

@@ -26,6 +26,8 @@ import Services from "@/pages/admin/Services";
 import ServiceCategories from "@/pages/admin/ServiceCategories";
 import ServiceBooking from "@/pages/admin/ServiceBooking";
 import ServiceReviews from "@/pages/admin/ServiceReviews";
+import SalesOverview from "@/pages/admin/SalesOverview";
+import SalesTransactions from "@/pages/admin/SalesTransactions";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 
 import TechnicianDashboard from "@/pages/technician/TechnicianDashboard";
@@ -99,8 +101,8 @@ export default function AppRouter() {
             <Route path="services/categories" element={<ServiceCategories />} />
             <Route path="services/bookings" element={<ServiceBooking />} />
             <Route path="services/reviews" element={<ServiceReviews />} />
-            <Route path="sales" element={<AdminDashboard />} />
-            <Route path="sales/transactions" element={<AdminDashboard />} />
+            <Route path="sales" element={<SalesOverview />} />
+            <Route path="sales/transactions" element={<SalesTransactions />} />
             <Route path="staff/users" element={<AdminDashboard />} />
             <Route path="website/reviews" element={<AdminDashboard />} />
             <Route path="settings" element={<AdminDashboard />} />
