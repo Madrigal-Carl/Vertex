@@ -28,7 +28,10 @@ import ServiceBooking from "@/pages/admin/ServiceBooking";
 import ServiceReviews from "@/pages/admin/ServiceReviews";
 import SalesOverview from "@/pages/admin/SalesOverview";
 import SalesTransactions from "@/pages/admin/SalesTransactions";
-import AdminDashboard from "@/pages/admin/AdminDashboard";
+import Users from "@/pages/admin/Users";
+import Reviews from "@/pages/admin/Reviews";
+import Store from "@/pages/admin/Store";
+import Profile from "@/pages/admin/Profile";
 
 import TechnicianDashboard from "@/pages/technician/TechnicianDashboard";
 import CashierDashboard from "@/pages/cashier/CashierDashboard";
@@ -101,11 +104,12 @@ export default function AppRouter() {
             <Route path="services/categories" element={<ServiceCategories />} />
             <Route path="services/bookings" element={<ServiceBooking />} />
             <Route path="services/reviews" element={<ServiceReviews />} />
-            <Route path="sales" element={<SalesOverview />} />
+            <Route path="sales/overview" element={<SalesOverview />} />
             <Route path="sales/transactions" element={<SalesTransactions />} />
-            <Route path="staff/users" element={<AdminDashboard />} />
-            <Route path="website/reviews" element={<AdminDashboard />} />
-            <Route path="settings" element={<AdminDashboard />} />
+            <Route path="staff/users" element={<Users />} />
+            <Route path="website/reviews" element={<Reviews />} />
+            <Route path="settings/store" element={<Store />} />
+            <Route path="settings/profile" element={<Profile />} />
           </Route>
         </Route>
 

@@ -16,6 +16,8 @@ import {
     LuUsers,
     LuMessageSquare,
     LuSettings,
+    LuStore,
+    LuCircleUser,
 } from "react-icons/lu";
 
 export const adminNavSections = [
@@ -109,7 +111,7 @@ export const adminNavSections = [
         items: [
             {
                 name: "Overview",
-                href: "/admin/sales",
+                href: "/admin/sales/overview",
                 icon: LuChartBar,
             },
             {
@@ -143,9 +145,14 @@ export const adminNavSections = [
         label: "Settings",
         items: [
             {
-                name: "Settings",
-                href: "/admin/settings",
-                icon: LuSettings,
+                name: "Store",
+                href: "/admin/settings/store",
+                icon: LuStore,
+            },
+            {
+                name: "Profile",
+                href: "/admin/settings/profile",
+                icon: LuCircleUser,
             },
         ],
     },
@@ -167,9 +174,10 @@ export const adminBreadcrumbs = {
     "/admin/services/categories": { section: "Services", page: "Categories" },
     "/admin/services/bookings": { section: "Services", page: "Bookings" },
     "/admin/services/reviews": { section: "Services", page: "Reviews" },
-    "/admin/sales": { section: "Sales", page: "Overview" },
+    "/admin/sales/overview": { section: "Sales", page: "Overview" },
     "/admin/sales/transactions": { section: "Sales", page: "Transactions" },
     "/admin/staff/users": { section: "Staff", page: "Users" },
     "/admin/website/reviews": { section: "Website", page: "Reviews" },
-    "/admin/settings": { section: "Settings", page: "Settings" },
+    "/admin/settings/store": { section: "Settings", page: "Settings" },
+    "/admin/settings/profile": { section: "Settings", page: "Settings" },
 };
