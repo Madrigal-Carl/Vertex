@@ -11,15 +11,20 @@ import {
   validateRegister,
   validateLogin,
 } from "../validators/auth.validator.js";
-import { protect } from "../middlewares/auth.middleware.js";
+import { authenticated, guestOnly } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/register", validateRegister, register);
-router.get("/verify-email/:token", verifyEmail);
-router.post("/login", validateLogin, login);
-router.post("/logout", logout);
-router.post("/google", googleAuth);
-router.get("/me", protect, getMe);
+router.post("/register", guestOnly, validateRegister, register);
+
+router.get("/verify-email/:token", guestOnly, verifyEmail);
+
+router.post("/login", guestOnly, validateLogin, login);
+
+router.post("/google", guestOnly, googleAuth);
+
+router.post("/logout", authenticated, logout);
+
+router.get("/me", authenticated, getMe);
 
 export default router;
