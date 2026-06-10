@@ -250,9 +250,7 @@ export default function ServiceBookings() {
             {/* Header */}
             <div className="flex items-start justify-between px-6 pt-6 pb-4 border-b border-border">
               <div>
-                <h2 className="text-lg font-serif font-black">
-                  New Service Booking
-                </h2>
+                <h2 className="text-lg font-bold">New Service Booking</h2>
                 <p className="text-sm text-muted-foreground mt-0.5">
                   Fill in the details to schedule a new service.
                 </p>
@@ -488,7 +486,7 @@ export default function ServiceBookings() {
           >
             <div className="flex items-start justify-between px-6 pt-6 pb-4 border-b border-border">
               <div>
-                <h2 className="text-lg font-serif font-black">Edit Booking</h2>
+                <h2 className="text-lg font-bold">Edit Booking</h2>
                 <p className="text-sm text-muted-foreground mt-0.5">
                   Update details for {editingBooking.id}.
                 </p>
@@ -702,9 +700,7 @@ export default function ServiceBookings() {
                 <p className="text-xs text-muted-foreground font-medium mb-1">
                   {selectedBooking.date}
                 </p>
-                <h2 className="text-lg font-serif font-black">
-                  {selectedBooking.id}
-                </h2>
+                <h2 className="text-lg font-bold">{selectedBooking.id}</h2>
                 <div className="mt-1.5">
                   <StatusBadge status={selectedBooking.status} />
                 </div>

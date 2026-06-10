@@ -1006,7 +1006,7 @@ export default function Orders() {
           >
             <div className="flex items-start justify-between px-6 pt-6 pb-4 border-b border-border">
               <div>
-                <h2 className="text-lg font-serif font-black">Edit Order</h2>
+                <h2 className="text-lg font-bold">Edit Order</h2>
                 <p className="text-sm text-muted-foreground mt-0.5">
                   Update customer info and order status.
                 </p>

@@ -5,3 +5,21 @@ export async function getCategories() {
 
   return res.data.categories;
 }
+
+export async function createCategory(data) {
+  const res = await api.post("/categories", data);
+
+  return res.data;
+}
+
+export async function updateCategory(id, data) {
+  const res = await api.put(`/categories/${id}`, data);
+
+  return res.data;
+}
+
+export async function deleteCategory(id) {
+  const res = await api.delete(`/categories/${id}`);
+
+  return res.data;
+}

@@ -52,7 +52,7 @@ export default function SalesTransactions() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-serif font-black">Transactions</h1>
+        <h1 className="text-2xl font-bold">Transactions</h1>
         <button className="inline-flex items-center justify-center gap-2 text-sm font-medium cursor-pointer border border-border bg-transparent rounded-[4px] min-h-9 px-4 py-2 hover:bg-secondary">
           <Download className="w-4 h-4" /> Export
         </button>

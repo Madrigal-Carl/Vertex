@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { SearchBar } from "@/components/admin/SearchBar";
 import { Pagination } from "@/components/admin/Pagination";
+import EntityModal from "@/components/modals/EntityModal";
+import { useCreateCategory } from "@/hooks/queries/useCategoryQueries";
+import { createCategory } from "@/services/category.service";
 import {
   LuPlus as Plus,
   LuPencil as Edit,
   LuTrash2 as Trash2,
   LuEllipsis as MoreHorizontal,
 } from "react-icons/lu";
+
 const categoriesData = [
   { id: "CAT-001", name: "Electronics", productCount: 45 },
   { id: "CAT-002", name: "Accessories", productCount: 128 },
@@ -17,8 +21,20 @@ const categoriesData = [
 export default function ProductCategories() {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
+
+  const createCategoryMutation = useCreateCategory(() => {
+    setIsAddModalOpen(false);
+  });
+
+  const handleCreateCategory = async (name) => {
+    await createCategoryMutation.mutateAsync({
+      name,
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -38,45 +54,14 @@ export default function ProductCategories() {
         </button>
       </div>
 
-      {isAddModalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          onClick={() => setIsAddModalOpen(false)}
-        >
-          <div className="fixed inset-0 bg-black/50" />
-          <div
-            className="relative z-50 bg-card rounded-[6px] w-full max-w-md shadow-xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="px-6 pt-6 pb-4 border-b border-border">
-              <h2 className="text-lg font-serif font-black">Add Category</h2>
-            </div>
-            <div className="px-6 py-5 space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Category Name</label>
-                <input
-                  placeholder="e.g. New Arrivals"
-                  className="flex h-9 w-full rounded-[4px] border border-input bg-transparent px-3 py-1 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                />
-              </div>
-            </div>
-            <div className="flex justify-end gap-2 px-6 py-4 border-t border-border bg-secondary/20">
-              <button
-                className="inline-flex items-center justify-center gap-2 text-sm font-medium cursor-pointer border border-border bg-transparent rounded-[4px] min-h-9 px-4 hover:bg-secondary"
-                onClick={() => setIsAddModalOpen(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="inline-flex items-center justify-center gap-2 text-sm font-medium cursor-pointer bg-[#E60000] hover:bg-[#CC0000] text-white rounded-[4px] min-h-9 px-4"
-                onClick={() => setIsAddModalOpen(false)}
-              >
-                Save Category
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <EntityModal
+        open={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        title="Add Product Category"
+        label="Category Name"
+        placeholder="e.g. Electronics"
+        onSubmit={handleCreateCategory}
+      />
 
       <div className="bg-card border border-border rounded-[6px] overflow-hidden flex flex-col">
         <div className="p-4 border-b border-border">
