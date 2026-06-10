@@ -171,7 +171,7 @@ export default function Overview() {
                   width={36}
                 />
                 <RechartsTooltip
-                  cursor={{ fill: "hsl(var(--muted))", opacity: 0.5 }}
+                  cursor={{ fill: "#ccc", opacity: 0.5 }}
                   contentStyle={{
                     borderRadius: "6px",
                     border: "1px solid hsl(var(--border))",
