@@ -118,7 +118,7 @@ export default function ProductCard({ product }) {
           <span className="font-display font-bold text-[#0F2436] text-lg">
             {formatPrice(product.price * (1 - (product.discount || 0) / 100))}
           </span>
-          {product.price && (
+          {product.discount > 0 && (
             <span className="text-xs text-[#5E7386] line-through">
               {formatPrice(product.price)}
             </span>
