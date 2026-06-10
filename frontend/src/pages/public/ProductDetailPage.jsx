@@ -32,6 +32,7 @@ export function buildVariantAttributes(variants = []) {
       id: variant._id,
       sku: variant.sku,
       price: variant.price,
+      discount: variant.discount,
       stock: variant.stock,
       attributes: variant.attributes,
     })),
@@ -135,7 +136,8 @@ export default function ProductDetailPage() {
       productId: product._id,
       variantId: selectedVariant.id,
       name: product.name,
-      price: selectedVariant.price * (1 - (product?.discount || 0) / 100),
+      price:
+        selectedVariant.price * (1 - (selectedVariant.discount || 0) / 100),
       quantity: safeQuantity,
       image: product.images?.find((img) => img.isPrimary)?.url,
       attributes: selectedAttributes,
@@ -212,7 +214,7 @@ export default function ProductDetailPage() {
               <span className="text-3xl font-display font-bold text-[#0F2436]">
                 ₱
                 {formatPrice(
-                  displayPrice * (1 - (product?.discount || 0) / 100),
+                  displayPrice * (1 - (selectedVariant?.discount || 0) / 100),
                 )}
               </span>
               <span className="text-lg text-[#5E7386] line-through font-sans">
@@ -221,12 +223,12 @@ export default function ProductDetailPage() {
                   selectedVariant?.price || formatPrice(displayPrice),
                 )}
               </span>
-              {product?.discount > 0 && (
+              {selectedVariant?.discount > 0 && (
                 <span
                   className="text-xs font-display tracking-widest bg-[#E63946] text-white px-2 py-1 uppercase"
                   style={{ borderRadius: "2px" }}
                 >
-                  -{product?.discount}%
+                  -{selectedVariant?.discount}%
                 </span>
               )}
             </div>

@@ -34,26 +34,44 @@ const getMinVariantPrice = async (productId) => {
       },
     },
     {
-      $group: {
-        _id: null,
-        minPrice: { $min: "$price" },
+      $sort: {
+        price: 1,
+      },
+    },
+    {
+      $limit: 1,
+    },
+    {
+      $project: {
+        _id: 0,
+        price: 1,
+        discount: 1,
       },
     },
   ]);
 
-  return result[0]?.minPrice || 0;
+  return (
+    result[0] || {
+      price: 0,
+      discount: 0,
+    }
+  );
 };
 
 const enrichProduct = async (product) => {
-  const [stats, price] = await Promise.all([
+  const [stats, minPrice] = await Promise.all([
     getRatingStats(product._id),
     getMinVariantPrice(product._id),
   ]);
 
   return {
     ...product.toObject(),
-    price,
-    averageRating: Number(stats.averageRating?.toFixed(1) || 0),
+
+    price: minPrice.price,
+    discount: minPrice.discount,
+    averageRating: Number(
+      stats.averageRating?.toFixed(1) || 0,
+    ),
     reviewCount: stats.reviewCount || 0,
   };
 };
@@ -132,14 +150,48 @@ export const getProductById = async (id) => {
 };
 
 export const getFeaturedProductsService = async () => {
-  const products = await Product.find({
-    discount: { $gt: 0 },
-  })
-    .populate("categoryId", "name")
-    .sort({ discount: -1 })
-    .limit(4);
+  const topDiscountedProducts = await Variant.aggregate([
+    {
+      $match: {
+        discount: { $gt: 0 },
+      },
+    },
+    {
+      $group: {
+        _id: "$productId",
+        maxDiscount: { $max: "$discount" },
+      },
+    },
+    {
+      $sort: {
+        maxDiscount: -1,
+      },
+    },
+    {
+      $limit: 4,
+    },
+  ]);
 
-  return Promise.all(products.map(enrichProduct));
+  const productIds = topDiscountedProducts.map(
+    (item) => item._id,
+  );
+
+  const products = await Product.find({
+    _id: { $in: productIds },
+  }).populate("categoryId", "name");
+
+  const enriched = await Promise.all(
+    products.map(enrichProduct),
+  );
+
+  return productIds
+    .map((id) =>
+      enriched.find(
+        (product) =>
+          product._id.toString() === id.toString(),
+      ),
+    )
+    .filter(Boolean);
 };
 
 export const getPopularProductsService = async () => {

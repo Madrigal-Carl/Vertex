@@ -126,7 +126,6 @@ async function seed() {
           categoryId: category._id,
           name: productName,
           description: faker.lorem.paragraph(),
-          discount: faker.helpers.arrayElement([0, 5, 10, 15, 20]),
           images: Array.from({ length: imageCount }).map((_, index) => ({
             url: faker.image.urlPicsumPhotos({
               width: 600,
@@ -252,12 +251,10 @@ async function seed() {
         for (const definition of variantDefinitions) {
           const variant = await Variant.create({
             productId: product._id,
-
             sku: faker.string.alphanumeric(10).toUpperCase(),
-
             attributes: definition.attributes,
-
             price: definition.price,
+            discount: faker.helpers.arrayElement([0, 5, 10, 15, 20]),
           });
 
           variants.push(variant);
@@ -316,10 +313,10 @@ async function seed() {
       for (let i = 0; i < reviewCount; i++) {
         const user =
           users[
-            faker.number.int({
-              min: 0,
-              max: users.length - 1,
-            })
+          faker.number.int({
+            min: 0,
+            max: users.length - 1,
+          })
           ];
 
         productReviews.push({
