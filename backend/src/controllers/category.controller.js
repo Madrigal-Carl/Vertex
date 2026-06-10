@@ -1,21 +1,31 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import {
   getAllCategories,
-  createCategory,
-  updateCategory,
-  deleteCategory,
+  createCategory as createCategoryService,
+  updateCategory as updateCategoryService,
+  deleteCategory as deleteCategoryService,
 } from "../services/category.service.js";
 
 export const getCategories = asyncHandler(async (req, res) => {
-  const categories = await getAllCategories();
+  const {
+    page = 1,
+    limit = 10,
+    search,
+    paginate = "true",
+  } = req.query;
 
-  return res.json({
-    categories,
+  const result = await getAllCategories({
+    page: Number(page),
+    limit: Number(limit),
+    search,
+    paginate: paginate === "true",
   });
+
+  return res.json(result);
 });
 
-export const createCategoryController = asyncHandler(async (req, res) => {
-  const category = await createCategory(req.body);
+export const createCategory = asyncHandler(async (req, res) => {
+  const category = await createCategoryService(req.body);
 
   return res.status(201).json({
     message: "Category created successfully",
@@ -23,8 +33,8 @@ export const createCategoryController = asyncHandler(async (req, res) => {
   });
 });
 
-export const updateCategoryController = asyncHandler(async (req, res) => {
-  const category = await updateCategory(req.params.id, req.body);
+export const updateCategory = asyncHandler(async (req, res) => {
+  const category = await updateCategoryService(req.params.id, req.body);
 
   return res.json({
     message: "Category updated successfully",
@@ -32,8 +42,8 @@ export const updateCategoryController = asyncHandler(async (req, res) => {
   });
 });
 
-export const deleteCategoryController = asyncHandler(async (req, res) => {
-  await deleteCategory(req.params.id);
+export const deleteCategory = asyncHandler(async (req, res) => {
+  await deleteCategoryService(req.params.id);
 
   return res.json({
     message: "Category deleted successfully",

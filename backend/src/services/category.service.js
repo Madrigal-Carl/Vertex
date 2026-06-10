@@ -1,9 +1,49 @@
 import Category from "../models/category.model.js";
 
-export const getAllCategories = async () => {
-  const categories = await Category.find().sort({ name: 1 });
+export const getAllCategories = async ({
+  page,
+  limit,
+  search,
+  paginate,
+}) => {
+  const filter = {};
 
-  return categories;
+  if (search) {
+    filter.name = {
+      $regex: search,
+      $options: "i",
+    };
+  }
+
+  let query = Category.find(filter).sort({
+    name: 1,
+  });
+
+  if (paginate) {
+    const skip = (page - 1) * limit;
+    query = query.skip(skip).limit(limit);
+  }
+
+  const categories = await query;
+
+  if (!paginate) {
+    return {
+      categories,
+      pagination: null,
+    };
+  }
+
+  const total = await Category.countDocuments(filter);
+
+  return {
+    categories,
+    pagination: {
+      page,
+      limit,
+      total,
+      pages: Math.ceil(total / limit),
+    },
+  };
 };
 
 export const createCategory = async (data) => {

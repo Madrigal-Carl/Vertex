@@ -1,9 +1,9 @@
 import express from "express";
 import {
     getCategories,
-    createCategoryController,
-    updateCategoryController,
-    deleteCategoryController,
+    createCategory,
+    updateCategory,
+    deleteCategory,
 } from "../controllers/category.controller.js";
 import { validateCategory } from "../validators/category.validator.js";
 
@@ -14,15 +14,15 @@ router.get("/", getCategories);
 router.post(
     "/",
     validateCategory,
-    createCategoryController
+    createCategory
 );
 
 router.put(
     "/:id",
     validateCategory,
-    updateCategoryController
+    updateCategory
 );
 
-router.delete("/:id", deleteCategoryController);
+router.delete("/:id", deleteCategory);
 
 export default router;
