@@ -47,142 +47,93 @@ export default function Products() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="px-6 pt-6 pb-4 border-b border-border sticky top-0 bg-card z-10">
-              <h2 className="text-lg font-black">Add New Product</h2>
+              <h2 className="text-lg font-bold">Add New Product</h2>
               <p className="text-sm text-muted-foreground">
                 Fill in the details below to create a new product listing.
               </p>
             </div>
 
-            <div className="px-6 py-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="md:col-span-2 space-y-8">
-                  <section className="space-y-4">
-                    <div className="flex items-center gap-2 pb-2 border-b border-border">
-                      <span className="w-5 h-5 rounded-full bg-[#E60000] text-white text-[10px] font-bold flex items-center justify-center">
-                        1
-                      </span>
-                      <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                        Basic Information
-                      </h3>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="space-y-1.5">
-                        <label className="text-sm font-medium">
-                          Product Name
-                        </label>
-                        <input
-                          placeholder="e.g. Wireless Noise-Cancelling Headphones"
-                          className="flex h-9 w-full rounded-[4px] border border-input bg-transparent px-3 py-1 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                          data-testid="input-product-name"
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-sm font-medium">
-                          Description
-                        </label>
-                        <textarea
-                          placeholder="Describe the product — features, specifications, use cases..."
-                          className="flex w-full rounded-[4px] border border-input bg-transparent px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring min-h-[110px] resize-none"
-                          data-testid="input-product-description"
-                        />
-                      </div>
-                    </div>
-                  </section>
-
-                  <section className="space-y-4">
-                    <div className="flex items-center gap-2 pb-2 border-b border-border">
-                      <span className="w-5 h-5 rounded-full bg-[#E60000] text-white text-[10px] font-bold flex items-center justify-center">
-                        2
-                      </span>
-                      <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                        Media
-                      </h3>
-                    </div>
-                    <ImageUploader />
-                  </section>
-
-                  <section className="space-y-4">
-                    <div className="flex items-center gap-2 pb-2 border-b border-border">
-                      <span className="w-5 h-5 rounded-full bg-[#E60000] text-white text-[10px] font-bold flex items-center justify-center">
-                        3
-                      </span>
-                      <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                        Variant Combinations
-                      </h3>
-                    </div>
-                    <VariantBuilder />
-                  </section>
+            <div className="px-6 py-6 space-y-8">
+              {/* 1. Basic Information */}
+              <section className="space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-border">
+                  <span className="w-5 h-5 rounded-full bg-[#E60000] text-white text-[10px] font-bold flex items-center justify-center">
+                    1
+                  </span>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    Basic Information
+                  </h3>
                 </div>
-
-                <div className="space-y-6">
-                  <section className="space-y-3 bg-secondary/40 rounded-[6px] p-4">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      Organization
-                    </h3>
-                    <div className="space-y-1.5">
-                      <label className="text-sm font-medium">Category</label>
-                      <select
-                        className="flex h-9 w-full rounded-[4px] border border-input bg-card px-3 py-1 text-sm cursor-pointer focus-visible:outline-none"
-                        data-testid="select-product-category"
-                      >
-                        <option value="">Select category</option>
-                        <option value="electronics">Electronics</option>
-                        <option value="accessories">Accessories</option>
-                        <option value="apparel">Apparel</option>
-                        <option value="home">Home</option>
-                      </select>
-                    </div>
-                  </section>
-
-                  <section className="space-y-3 bg-secondary/40 rounded-[6px] p-4">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      Pricing
-                    </h3>
-                    <div className="space-y-1.5">
-                      <label className="text-sm font-medium">
-                        Base Price ($)
-                      </label>
-                      <input
-                        type="number"
-                        placeholder="0.00"
-                        className="flex h-9 w-full rounded-[4px] border border-input bg-card px-3 py-1 text-sm focus-visible:outline-none"
-                        data-testid="input-product-price"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <label className="text-sm font-medium">
-                        Discount (%)
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="number"
-                          placeholder="0"
-                          min={0}
-                          max={100}
-                          className="flex h-9 w-full rounded-[4px] border border-input bg-card px-3 py-1 pr-8 text-sm focus-visible:outline-none"
-                          data-testid="input-product-discount"
-                        />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-                          %
-                        </span>
-                      </div>
-                      <p className="text-[11px] text-muted-foreground">
-                        Enter 0 for no discount, max 100.
-                      </p>
-                    </div>
-                    <div className="space-y-1.5">
-                      <label className="text-sm font-medium">
-                        Compare at Price ($)
-                      </label>
-                      <input
-                        type="number"
-                        placeholder="0.00"
-                        className="flex h-9 w-full rounded-[4px] border border-input bg-card px-3 py-1 text-sm focus-visible:outline-none"
-                      />
-                    </div>
-                  </section>
+                <div className="space-y-3">
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium">Product Name</label>
+                    <input
+                      placeholder="e.g. Wireless Noise-Cancelling Headphones"
+                      className="flex h-9 w-full rounded-[4px] border border-input bg-transparent px-3 py-1 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      data-testid="input-product-name"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium">Description</label>
+                    <textarea
+                      placeholder="Describe the product — features, specifications, use cases..."
+                      className="flex w-full rounded-[4px] border border-input bg-transparent px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring min-h-[110px] resize-none"
+                      data-testid="input-product-description"
+                    />
+                  </div>
                 </div>
-              </div>
+              </section>
+
+              {/* 2. Organization */}
+              <section className="space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-border">
+                  <span className="w-5 h-5 rounded-full bg-[#E60000] text-white text-[10px] font-bold flex items-center justify-center">
+                    2
+                  </span>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    Organization
+                  </h3>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium">Category</label>
+                  <select
+                    className="flex h-9 w-full rounded-[4px] border border-input bg-transparent px-3 py-1 text-sm cursor-pointer focus-visible:outline-none"
+                    data-testid="select-product-category"
+                  >
+                    <option value="">Select category</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="accessories">Accessories</option>
+                    <option value="apparel">Apparel</option>
+                    <option value="home">Home</option>
+                  </select>
+                </div>
+              </section>
+
+              {/* 3. Variant Combinations */}
+              <section className="space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-border">
+                  <span className="w-5 h-5 rounded-full bg-[#E60000] text-white text-[10px] font-bold flex items-center justify-center">
+                    3
+                  </span>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    Variant Combinations
+                  </h3>
+                </div>
+                <VariantBuilder />
+              </section>
+
+              {/* 4. Media */}
+              <section className="space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-border">
+                  <span className="w-5 h-5 rounded-full bg-[#E60000] text-white text-[10px] font-bold flex items-center justify-center">
+                    4
+                  </span>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    Media
+                  </h3>
+                </div>
+                <ImageUploader />
+              </section>
             </div>
 
             <div className="flex justify-end gap-2 px-6 py-4 border-t border-border bg-secondary/20 sticky bottom-0">
