@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Search } from "lucide-react";
 import { useProducts } from "@/hooks/queries/useProductQueries";
-import { useCategories } from "@/hooks/queries/useCategoryQueries";
+import { useAllCategories } from "@/hooks/queries/useCategoryQueries";
 import ProductCard from "@/components/public/ProductCard";
 import { useSearchParams } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
@@ -51,7 +51,7 @@ export default function Products() {
   const pagination = data?.pagination || {};
   const totalPages = pagination.pages || 1;
 
-  const { data: categoriesData } = useCategories();
+  const { data: categoriesData } = useAllCategories();
   const CATEGORIES = ["All", ...(categoriesData?.map((c) => c.name) || [])];
 
   function handleCategory(v) {

@@ -1,9 +1,26 @@
 import api from "@/api/axios";
 
-export async function getCategories() {
-  const res = await api.get("/categories");
+export async function getAllCategories() {
+  const res = await api.get("/categories", {
+    params: {
+      paginate: false,
+    },
+  });
 
   return res.data.categories;
+}
+
+export async function getCategories({ page, limit, search }) {
+  const res = await api.get("/categories", {
+    params: {
+      page,
+      limit,
+      search,
+      paginate: true,
+    },
+  });
+
+  return res.data;
 }
 
 export async function createCategory(data) {

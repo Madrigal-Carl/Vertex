@@ -1,13 +1,22 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
+  getAllCategories,
   getCategories,
   createCategory,
 } from "@/services/category.service";
 
-export const useCategories = () => {
+export const useAllCategories = () => {
   return useQuery({
-    queryKey: ["categories"],
-    queryFn: getCategories,
+    queryKey: ["categories", "all"],
+    queryFn: getAllCategories,
+  });
+};
+
+export const useCategories = ({ page, limit, search }) => {
+  return useQuery({
+    queryKey: ["categories", { page, limit, search }],
+    queryFn: () => getCategories({ page, limit, search }),
+    keepPreviousData: true,
   });
 };
 
