@@ -1,4 +1,6 @@
+import mongoose from "mongoose";
 import Category from "../models/category.model.js";
+import Product from "../models/product.model.js";
 
 export const getAllCategories = async ({
   page,
@@ -15,9 +17,30 @@ export const getAllCategories = async ({
     };
   }
 
-  let query = Category.find(filter).sort({
-    name: 1,
-  });
+  let query = Category.aggregate([
+    { $match: filter },
+    {
+      $lookup: {
+        from: "products",
+        localField: "_id",
+        foreignField: "categoryId",
+        as: "products",
+      },
+    },
+    {
+      $addFields: {
+        productCount: { $size: "$products" },
+      },
+    },
+    {
+      $project: {
+        products: 0,
+      },
+    },
+    {
+      $sort: { name: 1 },
+    },
+  ]);
 
   if (paginate) {
     const skip = (page - 1) * limit;

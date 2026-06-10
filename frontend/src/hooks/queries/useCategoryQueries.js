@@ -3,6 +3,8 @@ import {
   getAllCategories,
   getCategories,
   createCategory,
+  updateCategory,
+  deleteCategory,
 } from "@/services/category.service";
 
 export const useAllCategories = () => {
@@ -25,6 +27,36 @@ export const useCreateCategory = (onSuccess) => {
 
   return useMutation({
     mutationFn: createCategory,
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({
+        queryKey: ["categories"],
+      });
+
+      onSuccess?.(...args);
+    },
+  });
+};
+
+export const useUpdateCategory = (onSuccess) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }) => updateCategory(id, data),
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({
+        queryKey: ["categories"],
+      });
+
+      onSuccess?.(...args);
+    },
+  });
+};
+
+export const useDeleteCategory = (onSuccess) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteCategory,
     onSuccess: (...args) => {
       queryClient.invalidateQueries({
         queryKey: ["categories"],

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function EntityModal({
   open,
@@ -6,9 +6,18 @@ export default function EntityModal({
   title,
   label,
   placeholder,
+  defaultValue,
   onSubmit,
 }) {
   const [value, setValue] = useState("");
+
+  useEffect(() => {
+    if (open && defaultValue) {
+      setValue(defaultValue);
+    } else if (!open) {
+      setValue("");
+    }
+  }, [open, defaultValue]);
 
   if (!open) return null;
 
