@@ -76,7 +76,7 @@ const enrichProduct = async (product) => {
   };
 };
 
-export const getAllProducts = async ({ page, limit, category, search }) => {
+export const getAllProducts = async ({ page, limit, category, search, paginate }) => {
   const filter = {};
 
   if (category) {
@@ -95,19 +95,30 @@ export const getAllProducts = async ({ page, limit, category, search }) => {
     filter.name = { $regex: search, $options: "i" };
   }
 
-  const skip = (page - 1) * limit;
+  let query = Product.find(filter)
+    .populate("categoryId", "name")
+    .sort({ createdAt: -1 });
 
-  const [products, total] = await Promise.all([
-    Product.find(filter)
-      .populate("categoryId", "name")
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit),
+  if (paginate) {
+    const skip = (page - 1) * limit;
 
-    Product.countDocuments(filter),
-  ]);
+    query = query.skip(skip).limit(limit);
+  }
+
+  const products = await query;
 
   const enriched = await Promise.all(products.map(enrichProduct));
+
+
+
+  if (!paginate) {
+    return {
+      products: enriched,
+      pagination: null,
+    };
+  }
+
+  const total = await Product.countDocuments(filter);
 
   return {
     products: enriched,

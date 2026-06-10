@@ -18,12 +18,22 @@ export async function getProductById(id) {
   return response.data.product;
 }
 
-export async function getProducts({ page, limit, category, search }) {
+export async function getProducts({
+  page = 1,
+  limit = 10,
+  category,
+  search,
+  paginate = true,
+}) {
   const response = await api.get("/products", {
     params: {
       page,
       limit,
-      category: category === "All" ? "" : category,
+      paginate,
+      category:
+        category === "All"
+          ? undefined
+          : category,
       search,
     },
   });

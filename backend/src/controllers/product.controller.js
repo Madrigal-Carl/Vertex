@@ -8,13 +8,20 @@ import {
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const getProducts = asyncHandler(async (req, res) => {
-  const { page = 1, limit = 10, category, search } = req.query;
+  const {
+    page = 1,
+    limit = 10,
+    category,
+    search,
+    paginate = "true",
+  } = req.query;
 
   const result = await getAllProducts({
     page: Number(page),
     limit: Number(limit),
     category,
     search,
+    paginate: paginate === "true",
   });
 
   return res.json(result);
