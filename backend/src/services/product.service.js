@@ -58,10 +58,45 @@ const getMinVariantPrice = async (productId) => {
   );
 };
 
+const getTotalAvailableStock = async (productId) => {
+  const result = await Variant.aggregate([
+    {
+      $match: {
+        productId: new mongoose.Types.ObjectId(productId),
+      },
+    },
+    {
+      $lookup: {
+        from: "inventories",
+        localField: "_id",
+        foreignField: "variantId",
+        as: "inventory",
+      },
+    },
+    {
+      $unwind: "$inventory",
+    },
+    {
+      $match: {
+        "inventory.status": "available",
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        totalStock: { $sum: 1 },
+      },
+    },
+  ]);
+
+  return result[0]?.totalStock || 0;
+};
+
 const enrichProduct = async (product) => {
-  const [stats, minPrice] = await Promise.all([
+  const [stats, minPrice, totalStock] = await Promise.all([
     getRatingStats(product._id),
     getMinVariantPrice(product._id),
+    getTotalAvailableStock(product._id),
   ]);
 
   return {
@@ -69,6 +104,7 @@ const enrichProduct = async (product) => {
 
     price: minPrice.price,
     discount: minPrice.discount,
+    stock: totalStock,
     averageRating: Number(
       stats.averageRating?.toFixed(1) || 0,
     ),
