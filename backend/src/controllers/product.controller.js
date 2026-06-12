@@ -3,6 +3,7 @@ import {
   getFeaturedProductsService,
   getPopularProductsService,
   getProductById,
+  createProductService,
 } from "../services/product.service.js";
 
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -43,4 +44,13 @@ export const getProduct = asyncHandler(async (req, res) => {
   const product = await getProductById(req.params.id);
 
   return res.json({ product });
+});
+
+export const createProduct = asyncHandler(async (req, res) => {
+  const product = await createProductService(req.body);
+
+  return res.status(201).json({
+    message: "Product created successfully",
+    product,
+  });
 });

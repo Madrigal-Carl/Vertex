@@ -303,3 +303,65 @@ export const getPopularProductsService = async () => {
     )
     .filter(Boolean);
 };
+
+export const createProductService = async (data) => {
+  const {
+    categoryId,
+    name,
+    description,
+    images,
+    variants,
+  } = data;
+
+  const skus = variants.map((v) => v.sku);
+
+  const existingSku = await Variant.findOne({
+    sku: { $in: skus },
+  });
+
+  if (existingSku) {
+    throw new Error(
+      `SKU already exists: ${existingSku.sku}`
+    );
+  }
+
+  const session = await mongoose.startSession();
+
+  try {
+    await session.startTransaction();
+
+    const [product] = await Product.create(
+      [
+        {
+          categoryId,
+          name,
+          description,
+          images,
+        },
+      ],
+      { session }
+    );
+
+    const variantDocs = variants.map((variant) => ({
+      productId: product._id,
+      sku: variant.sku,
+      attributes: variant.attributes,
+      price: variant.price,
+      discount: variant.discount ?? 0,
+    }));
+
+    await Variant.insertMany(variantDocs, {
+      session,
+    });
+
+    await session.commitTransaction();
+
+    return await Product.findById(product._id)
+      .populate("categoryId", "name");
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    await session.endSession();
+  }
+};
