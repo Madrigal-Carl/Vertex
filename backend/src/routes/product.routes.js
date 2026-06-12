@@ -15,13 +15,13 @@ import { validateCreateProduct } from "../validators/product.validator.js";
 
 const router = express.Router();
 
-router.get("/", getProducts);
+router.get("/", allowRoles("guest", "customer", "admin", "customer"), getProducts);
 
 router.get("/featured", allowRoles("guest", "customer"), getFeaturedProducts);
 
 router.get("/popular", allowRoles("guest", "customer"), getPopularProducts);
 
-router.get("/:id", authenticated, excludeRoles("technician"), getProduct);
+router.get("/:id", allowRoles("guest", "customer", "admin", "customer"), getProduct);
 
 router.post(
   "/",
