@@ -4,7 +4,6 @@ import { useProducts } from "@/hooks/queries/useProductQueries";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { SearchBar } from "@/components/admin/SearchBar";
 import { Pagination } from "@/components/admin/Pagination";
-import { FilterPanel } from "@/components/admin/FilterPanel";
 import { StarRating } from "@/components/admin/StarRating";
 import ProductModal from "@/components/modals/ProductModal";
 import {

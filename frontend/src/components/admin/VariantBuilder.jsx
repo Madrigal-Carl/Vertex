@@ -11,7 +11,7 @@ function cartesian(arrays) {
 export function VariantBuilder() {
   const [attributes, setAttributes] = useState([{ name: "", values: [] }]);
   const [generated, setGenerated] = useState(false);
-  const [comboPrices, setComboPrices] = useState({});
+  const [comboFields, setComboFields] = useState({});
 
   const addAttribute = () =>
     setAttributes([...attributes, { name: "", values: [] }]);
@@ -34,21 +34,20 @@ export function VariantBuilder() {
   const validAttrs = attributes.filter((a) => a.values.length > 0);
   const combos = cartesian(validAttrs.map((a) => a.values));
 
-  function setComboField(key, field, val) {
-    setComboPrices((prev) => ({
+  function setField(key, field, val) {
+    setComboFields((prev) => ({
       ...prev,
       [key]: { ...prev[key], [field]: val },
     }));
   }
 
   function effectivePrice(key) {
-    const { price = "", discount = "" } = comboPrices[key] ?? {};
+    const { price = "", discount = "" } = comboFields[key] ?? {};
     const p = parseFloat(price);
     const d = parseFloat(discount);
     if (!price || isNaN(p)) return null;
     if (!discount || isNaN(d) || d === 0) return null;
-    const final = p * (1 - Math.min(d, 100) / 100);
-    return final.toFixed(2);
+    return (p * (1 - Math.min(d, 100) / 100)).toFixed(2);
   }
 
   return (
@@ -103,6 +102,7 @@ export function VariantBuilder() {
             <thead className="bg-secondary/60 text-muted-foreground border-b border-border">
               <tr>
                 <th className="px-4 py-2.5 font-medium">Variant</th>
+                <th className="px-4 py-2.5 font-medium">SKU</th>
                 <th className="px-4 py-2.5 font-medium">Price ($)</th>
                 <th className="px-4 py-2.5 font-medium">Discount (%)</th>
                 <th className="px-4 py-2.5 font-medium text-muted-foreground">
@@ -112,10 +112,14 @@ export function VariantBuilder() {
             </thead>
             <tbody className="divide-y divide-border">
               {combos.map((combo, i) => {
-                const label = combo.join(" · ");
                 const key = combo.join("::");
                 const ep = effectivePrice(key);
-                const rawPrice = comboPrices[key]?.price ?? "";
+                const rawPrice = comboFields[key]?.price ?? "";
+                const skuPlaceholder =
+                  "SKU-" +
+                  combo
+                    .map((v) => v.toUpperCase().replace(/\s+/g, "-"))
+                    .join("-");
                 return (
                   <tr key={i} className="hover:bg-secondary/20">
                     <td className="px-4 py-2.5">
@@ -132,14 +136,21 @@ export function VariantBuilder() {
                     </td>
                     <td className="px-4 py-2.5">
                       <input
+                        type="text"
+                        placeholder={skuPlaceholder}
+                        value={comboFields[key]?.sku ?? ""}
+                        onChange={(e) => setField(key, "sku", e.target.value)}
+                        className="h-8 rounded-[4px] w-36 border border-input bg-transparent px-3 py-1 text-sm focus-visible:outline-none font-mono"
+                      />
+                    </td>
+                    <td className="px-4 py-2.5">
+                      <input
                         type="number"
                         placeholder="0.00"
                         min={0}
                         step="0.01"
                         value={rawPrice}
-                        onChange={(e) =>
-                          setComboField(key, "price", e.target.value)
-                        }
+                        onChange={(e) => setField(key, "price", e.target.value)}
                         className="h-8 rounded-[4px] w-28 border border-input bg-transparent px-3 py-1 text-sm focus-visible:outline-none"
                       />
                     </td>
@@ -150,9 +161,9 @@ export function VariantBuilder() {
                           placeholder="0"
                           min={0}
                           max={100}
-                          value={comboPrices[key]?.discount ?? ""}
+                          value={comboFields[key]?.discount ?? ""}
                           onChange={(e) =>
-                            setComboField(key, "discount", e.target.value)
+                            setField(key, "discount", e.target.value)
                           }
                           className="h-8 rounded-[4px] w-full border border-input bg-transparent px-3 pr-7 py-1 text-sm focus-visible:outline-none"
                         />
@@ -163,7 +174,7 @@ export function VariantBuilder() {
                     </td>
                     <td className="px-4 py-2.5">
                       {ep != null ? (
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 items-center">
                           <span className="text-sm font-semibold text-emerald-700">
                             ${ep}
                           </span>
