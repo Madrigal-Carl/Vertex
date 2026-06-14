@@ -1,29 +1,38 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { categorySchema } from "@/schemas/category.schema";
 
-export default function EntityModal({
+export default function CategoryModal({
   open,
   onClose,
   title,
   label,
   placeholder,
-  defaultValue,
+  defaultValues = { name: "" },
   onSubmit,
 }) {
-  const [value, setValue] = useState("");
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(categorySchema),
+    defaultValues,
+    mode: "onTouched",
+  });
 
   useEffect(() => {
-    if (open && defaultValue) {
-      setValue(defaultValue);
-    } else if (!open) {
-      setValue("");
+    if (open) {
+      reset(defaultValues);
     }
-  }, [open, defaultValue]);
+  }, [open, reset, defaultValues.name]);
 
   if (!open) return null;
 
-  const handleSubmit = () => {
-    onSubmit?.(value);
-    setValue("");
+  const handleFormSubmit = async (values) => {
+    await onSubmit?.(values);
   };
 
   return (
@@ -33,7 +42,8 @@ export default function EntityModal({
     >
       <div className="fixed inset-0 bg-black/50" />
 
-      <div
+      <form
+        onSubmit={handleSubmit(handleFormSubmit)}
         className="relative z-50 bg-card rounded-[6px] w-full max-w-md shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
@@ -46,16 +56,22 @@ export default function EntityModal({
             <label className="text-sm font-medium">{label}</label>
 
             <input
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
+              {...register("name")}
               placeholder={placeholder}
-              className="flex h-9 w-full rounded-[4px] border border-input bg-transparent px-3 py-1 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              className={`flex h-9 w-full rounded-[4px] border px-3 py-1 text-sm bg-transparent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
+                errors.name ? "border-red-300" : "border-input"
+              }`}
             />
+
+            {errors.name?.message && (
+              <p className="text-sm text-red-600">{errors.name.message}</p>
+            )}
           </div>
         </div>
 
         <div className="flex justify-end gap-2 px-6 py-4 border-t border-border bg-secondary/20">
           <button
+            type="button"
             className="inline-flex items-center justify-center gap-2 text-sm font-medium cursor-pointer border border-border bg-transparent rounded-[4px] min-h-9 px-4 hover:bg-secondary"
             onClick={onClose}
           >
@@ -63,13 +79,14 @@ export default function EntityModal({
           </button>
 
           <button
-            onClick={handleSubmit}
+            type="submit"
+            disabled={isSubmitting}
             className="inline-flex items-center justify-center gap-2 text-sm font-medium cursor-pointer bg-[#E60000] hover:bg-[#CC0000] text-white rounded-[4px] min-h-9 px-4"
           >
             Save
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

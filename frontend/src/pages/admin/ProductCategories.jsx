@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import { SearchBar } from "@/components/admin/SearchBar";
 import { Pagination } from "@/components/admin/Pagination";
-import EntityModal from "@/components/modals/EntityModal";
+import CategoryModal from "@/components/modals/CategoryModal";
 import {
   useCreateCategory,
   useCategories,
@@ -50,8 +50,8 @@ export default function ProductCategories() {
     setDropdownRect(null);
   });
 
-  const handleCreateCategory = async (name) => {
-    await createCategoryMutation.mutateAsync({ name });
+  const handleCreateCategory = async (values) => {
+    await createCategoryMutation.mutateAsync(values);
   };
 
   const handleEditCategory = (category) => {
@@ -61,10 +61,10 @@ export default function ProductCategories() {
     setDropdownRect(null);
   };
 
-  const handleUpdateCategory = async (name) => {
+  const handleUpdateCategory = async (values) => {
     await updateCategoryMutation.mutateAsync({
       id: editingCategory._id,
-      data: { name },
+      data: values,
     });
   };
 
@@ -107,7 +107,7 @@ export default function ProductCategories() {
         </button>
       </div>
 
-      <EntityModal
+      <CategoryModal
         open={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         title="Add Product Category"
@@ -117,7 +117,7 @@ export default function ProductCategories() {
       />
 
       {isEditModalOpen && (
-        <EntityModal
+        <CategoryModal
           open={isEditModalOpen}
           onClose={() => {
             setIsEditModalOpen(false);
@@ -126,7 +126,7 @@ export default function ProductCategories() {
           title="Edit Product Category"
           label="Category Name"
           placeholder="e.g. Electronics"
-          defaultValue={editingCategory?.name}
+          defaultValues={{ name: editingCategory?.name ?? "" }}
           onSubmit={handleUpdateCategory}
         />
       )}
