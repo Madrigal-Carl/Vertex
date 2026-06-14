@@ -73,7 +73,6 @@ export default function Products() {
               data-testid="filter-category"
             >
               <option value="">All Categories</option>
-
               {categories.map((cat) => (
                 <option key={cat._id} value={cat.name}>
                   {cat.name}
@@ -110,7 +109,10 @@ export default function Products() {
                     <td className="px-4 py-3">
                       <div className="w-10 h-10 rounded-[4px] bg-secondary flex items-center justify-center border border-border">
                         <img
-                          src={product.images?.[0]?.url}
+                          src={
+                            product.images?.find((img) => img.isPrimary)?.url ||
+                            product.images?.[0]?.url
+                          }
                           alt={product.name}
                           className="w-10 h-10 rounded-[4px] object-cover border border-border"
                         />

@@ -20,6 +20,7 @@ const productSchema = new mongoose.Schema(
     images: [
       {
         _id: false,
+        publicId: String,
         url: String,
         isPrimary: {
           type: Boolean,
@@ -32,22 +33,6 @@ const productSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
-
-// =====================
-// METHODS
-// =====================
-
-productSchema.methods.hasDiscount = function () {
-  return this.discount > 0;
-};
-
-productSchema.methods.getDiscountedPrice = function (price) {
-  if (!this.hasDiscount()) {
-    return price;
-  }
-
-  return Math.round(price * (1 - this.discount / 100));
-};
 
 // =====================
 // VIRTUALS

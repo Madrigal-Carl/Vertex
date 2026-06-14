@@ -1,17 +1,15 @@
 import { z } from "zod";
 
 const imageSchema = z.object({
-    url: z.url("Image URL is invalid"),
+    url: z.string().url("Image URL is invalid"),
+    publicId: z.string(),
     isPrimary: z.boolean().optional(),
 });
 
 const variantSchema = z.object({
     sku: z.string().trim().min(1, "SKU is required"),
-
     attributes: z.record(z.string(), z.string()).default({}),
-
     price: z.number().positive("Price must be greater than 0"),
-
     discount: z
         .number()
         .min(0, "Discount cannot be negative")
@@ -22,20 +20,16 @@ const variantSchema = z.object({
 export const createProductSchema = z
     .object({
         categoryId: z.string().min(1, "Category is required"),
-
         name: z
             .string()
             .trim()
             .min(2, "Product name must be at least 2 characters")
             .max(100, "Product name cannot exceed 100 characters"),
-
         description: z
             .string()
             .trim()
             .min(1, "Description is required"),
-
         images: z.array(imageSchema).min(1, "At least one image is required"),
-
         variants: z.array(variantSchema).min(1, "At least one variant is required"),
     })
     .superRefine((data, ctx) => {

@@ -1,14 +1,84 @@
+import { useState, useEffect, useCallback } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { productFormSchema } from "@/schemas/product.schema";
 import { VariantBuilder } from "@/components/admin/VariantBuilder";
 import { ImageUploader } from "@/components/admin/ImageUploader";
+import { useAllCategories } from "@/hooks/queries/useCategoryQueries";
+import { useCreateProduct } from "@/hooks/queries/useProductQueries";
+import { useUploadImages } from "@/hooks/queries/useUploadMutations";
+import { LuChevronDown } from "react-icons/lu";
 
 export default function ProductModal({ onClose }) {
+  const { data: categoriesData } = useAllCategories();
+  const categories = categoriesData ?? [];
+
+  const form = useForm({
+    resolver: zodResolver(productFormSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      categoryId: "",
+      images: [],
+      variants: [],
+    },
+  });
+
+  const { setValue, register, handleSubmit, watch } = form;
+  const [images, setImages] = useState([]);
+  const [primaryIndex, setPrimaryIndex] = useState(0);
+  const [variants, setVariants] = useState([]);
+  const handleVariantsChange = useCallback((v) => {
+    setVariants(v);
+  }, []);
+
+  const { mutateAsync: uploadImagesMutation } = useUploadImages();
+  const { mutateAsync: createProductMutation } = useCreateProduct();
+
+  const onSubmit = async (values) => {
+    try {
+      const uploadedImages = await uploadImagesMutation(
+        images.map((img) => img.file),
+      );
+
+      const formattedImages = uploadedImages.map((img, index) => ({
+        ...img,
+        isPrimary: index === primaryIndex,
+      }));
+
+      await createProductMutation({
+        ...values,
+        images: formattedImages,
+      });
+
+      onClose();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    const formatted = images.map((img, index) => ({
+      url: img.uploadedUrl || img.url,
+      publicId: img.publicId || "",
+      isPrimary: index === primaryIndex,
+    }));
+
+    setValue("images", formatted, { shouldValidate: true });
+  }, [images, primaryIndex, setValue]);
+
+  useEffect(() => {
+    setValue("variants", variants, { shouldValidate: true });
+  }, [variants, setValue]);
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       onClick={onClose}
     >
       <div className="fixed inset-0 bg-black/50" />
-      <div
+      <form
+        onSubmit={handleSubmit(onSubmit)}
         className="relative z-50 bg-card rounded-[6px] w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
@@ -34,17 +104,17 @@ export default function ProductModal({ onClose }) {
               <div className="space-y-1.5">
                 <label className="text-sm font-medium">Product Name</label>
                 <input
+                  {...register("name")}
                   placeholder="e.g. Wireless Noise-Cancelling Headphones"
                   className="flex h-9 w-full rounded-[4px] border border-input bg-transparent px-3 py-1 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                  data-testid="input-product-name"
                 />
               </div>
               <div className="space-y-1.5">
                 <label className="text-sm font-medium">Description</label>
                 <textarea
+                  {...register("description")}
                   placeholder="Describe the product — features, specifications, use cases..."
                   className="flex w-full rounded-[4px] border border-input bg-transparent px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring min-h-[110px] resize-none"
-                  data-testid="input-product-description"
                 />
               </div>
             </div>
@@ -62,16 +132,21 @@ export default function ProductModal({ onClose }) {
             </div>
             <div className="space-y-1.5">
               <label className="text-sm font-medium">Category</label>
-              <select
-                className="flex h-9 w-full rounded-[4px] border border-input bg-transparent px-3 py-1 text-sm cursor-pointer focus-visible:outline-none"
-                data-testid="select-product-category"
-              >
-                <option value="">Select category</option>
-                <option value="electronics">Electronics</option>
-                <option value="accessories">Accessories</option>
-                <option value="apparel">Apparel</option>
-                <option value="home">Home</option>
-              </select>
+              <div className="relative w-full">
+                <select
+                  {...register("categoryId")}
+                  className="flex h-9 w-full appearance-none rounded-[4px] border border-input bg-transparent px-3 pr-10 py-1 text-sm cursor-pointer focus-visible:outline-none"
+                >
+                  <option value="">Select category</option>
+                  {categories.map((cat) => (
+                    <option key={cat._id} value={cat._id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+
+                <LuChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              </div>
             </div>
           </section>
 
@@ -85,7 +160,7 @@ export default function ProductModal({ onClose }) {
                 Variant Combinations
               </h3>
             </div>
-            <VariantBuilder />
+            <VariantBuilder onVariantsChange={handleVariantsChange} />
           </section>
 
           {/* 4. Media */}
@@ -98,27 +173,31 @@ export default function ProductModal({ onClose }) {
                 Media
               </h3>
             </div>
-            <ImageUploader />
+            <ImageUploader
+              images={images}
+              setImages={setImages}
+              primaryIndex={primaryIndex}
+              setPrimaryIndex={setPrimaryIndex}
+            />
           </section>
         </div>
 
         <div className="flex justify-end gap-2 px-6 py-4 border-t border-border bg-secondary/20 sticky bottom-0">
           <button
+            type="button"
             className="inline-flex items-center justify-center gap-2 text-sm font-medium cursor-pointer border border-border bg-transparent rounded-[4px] min-h-9 px-4 hover:bg-secondary"
             onClick={onClose}
-            data-testid="button-cancel-product"
           >
             Cancel
           </button>
           <button
+            type="submit"
             className="inline-flex items-center justify-center gap-2 text-sm font-medium cursor-pointer bg-[#E60000] hover:bg-[#CC0000] text-white rounded-[4px] min-h-9 px-4"
-            onClick={onClose}
-            data-testid="button-save-product"
           >
             Save Product
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

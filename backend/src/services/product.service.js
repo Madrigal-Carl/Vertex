@@ -320,48 +320,35 @@ export const createProductService = async (data) => {
   });
 
   if (existingSku) {
-    throw new Error(
-      `SKU already exists: ${existingSku.sku}`
-    );
+    throw new Error(`SKU already exists: ${existingSku.sku}`);
   }
 
-  const session = await mongoose.startSession();
+  const product = await Product.create({
+    categoryId,
+    name,
+    description,
+    images,
+  });
 
-  try {
-    await session.startTransaction();
+  const variantDocs = variants.map((variant) => ({
+    productId: product._id,
+    sku: variant.sku,
+    attributes: variant.attributes,
+    price: variant.price,
+    discount: variant.discount ?? 0,
+  }));
 
-    const [product] = await Product.create(
-      [
-        {
-          categoryId,
-          name,
-          description,
-          images,
-        },
-      ],
-      { session }
-    );
+  await Variant.insertMany(variantDocs);
 
-    const variantDocs = variants.map((variant) => ({
-      productId: product._id,
-      sku: variant.sku,
-      attributes: variant.attributes,
-      price: variant.price,
-      discount: variant.discount ?? 0,
-    }));
+  const populatedProduct = await Product.findById(
+    product._id
+  ).populate("categoryId");
 
-    await Variant.insertMany(variantDocs, {
-      session,
-    });
+  const productVariants =
+    await Variant.findByProductWithStock(product._id);
 
-    await session.commitTransaction();
-
-    return await Product.findById(product._id)
-      .populate("categoryId", "name");
-  } catch (error) {
-    await session.abortTransaction();
-    throw error;
-  } finally {
-    await session.endSession();
-  }
+  return {
+    ...populatedProduct.toObject(),
+    variants: productVariants,
+  };
 };

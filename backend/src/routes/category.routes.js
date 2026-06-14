@@ -6,7 +6,7 @@ import {
     deleteCategory,
 } from "../controllers/category.controller.js";
 import { validateCategory } from "../validators/category.validator.js";
-import { authenticated, allowRoles, excludeRoles } from "../middlewares/auth.middleware.js";
+import { authenticated, allowRoles } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 

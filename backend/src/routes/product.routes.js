@@ -9,7 +9,6 @@ import {
 import {
   authenticated,
   allowRoles,
-  excludeRoles,
 } from "../middlewares/auth.middleware.js";
 import { validateCreateProduct } from "../validators/product.validator.js";
 

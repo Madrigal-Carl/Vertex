@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { LuPlus as Plus, LuX as X } from "react-icons/lu";
 
 function cartesian(arrays) {
@@ -8,7 +8,7 @@ function cartesian(arrays) {
   return first.flatMap((v) => restProduct.map((combo) => [v, ...combo]));
 }
 
-export function VariantBuilder() {
+export function VariantBuilder({ onVariantsChange }) {
   const [attributes, setAttributes] = useState([{ name: "", values: [] }]);
   const [generated, setGenerated] = useState(false);
   const [comboFields, setComboFields] = useState({});
@@ -31,8 +31,14 @@ export function VariantBuilder() {
     setAttributes(a);
   };
 
-  const validAttrs = attributes.filter((a) => a.values.length > 0);
-  const combos = cartesian(validAttrs.map((a) => a.values));
+  const validAttrs = useMemo(
+    () => attributes.filter((a) => a.values.length > 0),
+    [attributes],
+  );
+  const combos = useMemo(
+    () => cartesian(validAttrs.map((a) => a.values)),
+    [validAttrs],
+  );
 
   function setField(key, field, val) {
     setComboFields((prev) => ({
@@ -49,6 +55,27 @@ export function VariantBuilder() {
     if (!discount || isNaN(d) || d === 0) return null;
     return (p * (1 - Math.min(d, 100) / 100)).toFixed(2);
   }
+
+  useEffect(() => {
+    const result = combos.map((combo) => {
+      const key = combo.join("::");
+
+      const attributes = {};
+
+      combo.forEach((value, index) => {
+        attributes[validAttrs[index].name] = value;
+      });
+
+      return {
+        sku: comboFields[key]?.sku || "",
+        attributes,
+        price: Number(comboFields[key]?.price || 0),
+        discount: Number(comboFields[key]?.discount || 0),
+      };
+    });
+
+    onVariantsChange(result);
+  }, [comboFields, combos, validAttrs, onVariantsChange]);
 
   return (
     <div className="space-y-4">

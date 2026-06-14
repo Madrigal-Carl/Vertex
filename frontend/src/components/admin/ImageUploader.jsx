@@ -6,9 +6,12 @@ import {
   LuStarOff,
 } from "react-icons/lu";
 
-export function ImageUploader({ className }) {
-  const [images, setImages] = useState([]);
-  const [primaryIndex, setPrimaryIndex] = useState(0);
+export function ImageUploader({
+  images,
+  setImages,
+  primaryIndex,
+  setPrimaryIndex,
+}) {
   const [dragging, setDragging] = useState(false);
   const inputRef = useRef(null);
 
@@ -47,7 +50,7 @@ export function ImageUploader({ className }) {
   }
 
   return (
-    <div className={`space-y-3${className ? " " + className : ""}`}>
+    <div className="space-y-3">
       {/* Drop zone */}
       <div
         onClick={() => inputRef.current?.click()}
